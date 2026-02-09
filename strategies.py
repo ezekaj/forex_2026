@@ -16,7 +16,7 @@ STRATEGIES = {
     "macd": {
         "name": "MACD",
         "description": "Moving Average Convergence Divergence. Buy on bullish crossover, sell on bearish crossover.",
-        "params": {"fast": 12, "slow": 26, "signal": 9},
+        "params": {"fast": 12, "slow": 26, "signal_period": 9},
     },
     "bollinger_bands": {
         "name": "Bollinger Bands",
