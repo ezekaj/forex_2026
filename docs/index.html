@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Trading Bot - AI-Powered Multi-Asset Trading Platform</title>
+    <meta name="description" content="AI-powered trading platform for forex, stocks, and cryptocurrency. Multi-agent decision making with real-time dashboards and Kelly Criterion risk management.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,507 +14,855 @@
             theme: {
                 extend: {
                     colors: {
-                        dark: '#111827',
-                        surface: '#0A0E1A',
-                        amber: {
-                            400: '#FBBF24',
-                            500: '#F59E0B',
-                            600: '#D97706',
-                        },
-                        green: {
-                            400: '#34D399',
-                            500: '#10B981',
-                            600: '#059669',
-                        },
+                        navy: '#111827',
+                        surface: '#0D1117',
+                        card: '#151C28',
+                        'card-alt': '#1A2233',
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'monospace'],
                     },
                 },
             },
         }
     </script>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', system-ui, sans-serif;
             background-color: #111827;
-            color: #f3f4f6;
+            color: #E5E7EB;
         }
 
-        .hero-gradient {
-            background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245, 158, 11, 0.12) 0%, transparent 60%),
-                        radial-gradient(ellipse 60% 40% at 80% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
-                        radial-gradient(ellipse 50% 30% at 20% 60%, rgba(245, 158, 11, 0.06) 0%, transparent 50%),
-                        #111827;
+        /* Ticker */
+        .ticker-wrap {
+            overflow: hidden;
+            width: 100%;
+        }
+        .ticker-track {
+            display: flex;
+            width: max-content;
+            animation: tickerScroll 30s linear infinite;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-track:hover { animation-play-state: paused; }
+
+        /* Equity curve glow */
+        .equity-line { filter: drop-shadow(0 0 6px rgba(16,185,129,0.4)); }
+
+        /* Sparkline container */
+        .sparkline-card {
+            background: #151C28;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: border-color 0.2s;
+        }
+        .sparkline-card:hover { border-color: rgba(245,158,11,0.3); }
+
+        /* Glass panel */
+        .panel {
+            background: #151C28;
+            border: 1px solid rgba(255,255,255,0.06);
         }
 
-        .glass-card {
-            background: rgba(10, 14, 26, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(245, 158, 11, 0.1);
-            transition: all 0.3s ease;
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0D1117; }
+        ::-webkit-scrollbar-thumb { background: rgba(245,158,11,0.25); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(245,158,11,0.4); }
 
-        .glass-card:hover {
-            border-color: rgba(245, 158, 11, 0.3);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(245, 158, 11, 0.05);
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #F59E0B, #FBBF24, #FDE68A);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .gradient-text-green {
-            background: linear-gradient(135deg, #10B981, #34D399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
+        /* Fade in */
         .fade-in {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
-
         .fade-in.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .pipeline-line {
-            background: linear-gradient(180deg, #F59E0B, #10B981);
-        }
+        /* Grid lines for chart */
+        .grid-line { stroke: rgba(255,255,255,0.06); stroke-dasharray: 4 4; }
 
-        .badge {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
-
-        .stat-card {
-            background: rgba(10, 14, 26, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(16, 185, 129, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.05);
-        }
-
-        .tech-badge {
-            background: rgba(10, 14, 26, 0.8);
-            border: 1px solid rgba(245, 158, 11, 0.15);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: rgba(245, 158, 11, 0.6);
-            transform: translateY(-2px);
-        }
-
-        .pipeline-step {
+        /* Pricing highlight */
+        .pricing-highlight {
+            border: 2px solid #F59E0B;
+            box-shadow: 0 0 40px rgba(245,158,11,0.08);
             position: relative;
         }
-
-        .pipeline-step::after {
-            content: '';
+        .pricing-highlight::before {
+            content: 'POPULAR';
             position: absolute;
-            bottom: -32px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            width: 2px;
-            height: 32px;
-            background: linear-gradient(180deg, rgba(245, 158, 11, 0.6), rgba(16, 185, 129, 0.6));
+            background: #F59E0B;
+            color: #111827;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 14px;
+            border-radius: 9999px;
+            letter-spacing: 0.05em;
         }
 
-        .pipeline-step:last-child::after {
-            display: none;
+        /* Table */
+        .terminal-table {
+            font-variant-numeric: tabular-nums;
+        }
+        .terminal-table th {
+            background: #0D1117;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .terminal-table tr { border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .terminal-table tr:hover { background: rgba(245,158,11,0.03); }
+
+        /* Hamburger */
+        .hamburger-line {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #E5E7EB;
+            transition: all 0.3s;
+            border-radius: 1px;
+        }
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.active .hamburger-line:nth-child(2) { opacity: 0; }
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
+        /* Mobile menu */
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .mobile-menu.open { max-height: 300px; }
+
+        /* Risk box */
+        .risk-box {
+            background: #151C28;
+            border-left: 4px solid #F59E0B;
+            border-top: 1px solid rgba(245,158,11,0.15);
+            border-right: 1px solid rgba(245,158,11,0.15);
+            border-bottom: 1px solid rgba(245,158,11,0.15);
         }
 
-        ::-webkit-scrollbar-track {
-            background: #0A0E1A;
-        }
+        /* Asset card borders */
+        .asset-forex { border-top: 3px solid #F59E0B; }
+        .asset-stocks { border-top: 3px solid #3B82F6; }
+        .asset-crypto { border-top: 3px solid #10B981; }
 
-        ::-webkit-scrollbar-thumb {
-            background: rgba(245, 158, 11, 0.3);
-            border-radius: 4px;
+        /* CTA button */
+        .btn-cta {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: #111827;
+            font-weight: 700;
+            transition: all 0.25s;
         }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(245, 158, 11, 0.5);
+        .btn-cta:hover {
+            box-shadow: 0 0 30px rgba(245,158,11,0.35);
+            transform: translateY(-2px);
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur-xl border-b border-amber-500/10">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+<!-- ============================================================ -->
+<!-- 1. DASHBOARD NAV                                              -->
+<!-- ============================================================ -->
+<nav class="fixed top-0 w-full z-50 bg-navy/95 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+        <!-- Main nav row -->
+        <div class="flex items-center justify-between h-14">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2.5 shrink-0">
+                <svg class="w-7 h-7 text-amber-500" viewBox="0 0 28 28" fill="none">
+                    <rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/>
+                    <path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="21" cy="8" r="2" fill="currentColor"/>
+                </svg>
+                <span class="text-base font-bold text-amber-400 tracking-tight">Ultimate Trading Bot</span>
+            </a>
+
+            <!-- Desktop ticker (center) -->
+            <div class="hidden md:block flex-1 mx-6 ticker-wrap">
+                <div class="ticker-track text-xs font-mono">
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">EUR/USD 1.0847 <span class="text-[10px]">&#9650;</span>+0.12%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-red-400">BTC/USD $67,432 <span class="text-[10px]">&#9660;</span>-1.2%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">AAPL $198.11 <span class="text-[10px]">&#9650;</span>+0.45%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">GBP/USD 1.2734 <span class="text-[10px]">&#9650;</span>+0.08%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-red-400">ETH/USD $3,847 <span class="text-[10px]">&#9660;</span>-0.5%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">USD/JPY 149.85 <span class="text-[10px]">&#9650;</span>+0.33%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">TSLA $241.30 <span class="text-[10px]">&#9650;</span>+1.1%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-red-400">SOL/USD $138.50 <span class="text-[10px]">&#9660;</span>-2.5%</span>
+                    <span class="px-6"></span>
+                    <!-- Duplicate for seamless loop -->
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">EUR/USD 1.0847 <span class="text-[10px]">&#9650;</span>+0.12%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-red-400">BTC/USD $67,432 <span class="text-[10px]">&#9660;</span>-1.2%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">AAPL $198.11 <span class="text-[10px]">&#9650;</span>+0.45%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">GBP/USD 1.2734 <span class="text-[10px]">&#9650;</span>+0.08%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-red-400">ETH/USD $3,847 <span class="text-[10px]">&#9660;</span>-0.5%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">USD/JPY 149.85 <span class="text-[10px]">&#9650;</span>+0.33%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-green-400">TSLA $241.30 <span class="text-[10px]">&#9650;</span>+1.1%</span>
+                    <span class="px-1 text-gray-600">|</span>
+                    <span class="inline-flex items-center gap-1 px-3 whitespace-nowrap text-red-400">SOL/USD $138.50 <span class="text-[10px]">&#9660;</span>-2.5%</span>
+                </div>
+            </div>
+
+            <!-- Right side -->
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-dark" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                <a href="#" class="hidden sm:inline-flex btn-cta px-5 py-2 rounded-lg text-sm">Start Trading</a>
+                <!-- Hamburger (mobile) -->
+                <button id="hamburger-btn" class="hamburger md:hidden flex flex-col gap-1.5 p-2" aria-label="Menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden">
+            <div class="py-3 flex flex-col gap-2 border-t border-white/5">
+                <a href="#dashboard" class="text-gray-300 hover:text-amber-400 text-sm py-1.5 transition-colors mobile-nav-link">Dashboard</a>
+                <a href="#assets" class="text-gray-300 hover:text-amber-400 text-sm py-1.5 transition-colors mobile-nav-link">Assets</a>
+                <a href="#pipeline" class="text-gray-300 hover:text-amber-400 text-sm py-1.5 transition-colors mobile-nav-link">Strategy</a>
+                <a href="#terminal" class="text-gray-300 hover:text-amber-400 text-sm py-1.5 transition-colors mobile-nav-link">Terminal</a>
+                <a href="#pricing" class="text-gray-300 hover:text-amber-400 text-sm py-1.5 transition-colors mobile-nav-link">Pricing</a>
+                <a href="#" class="btn-cta px-5 py-2 rounded-lg text-sm text-center mt-1 sm:hidden">Start Trading</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile ticker -->
+    <div class="md:hidden border-t border-white/5 bg-navy/80">
+        <div class="ticker-wrap py-1.5">
+            <div class="ticker-track text-[11px] font-mono">
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-green-400">EUR/USD 1.0847 &#9650;+0.12%</span>
+                <span class="px-1 text-gray-700">|</span>
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-red-400">BTC/USD $67,432 &#9660;-1.2%</span>
+                <span class="px-1 text-gray-700">|</span>
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-green-400">AAPL $198.11 &#9650;+0.45%</span>
+                <span class="px-1 text-gray-700">|</span>
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-green-400">GBP/USD 1.2734 &#9650;+0.08%</span>
+                <span class="px-1 text-gray-700">|</span>
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-red-400">ETH/USD $3,847 &#9660;-0.5%</span>
+                <span class="px-3"></span>
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-green-400">EUR/USD 1.0847 &#9650;+0.12%</span>
+                <span class="px-1 text-gray-700">|</span>
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-red-400">BTC/USD $67,432 &#9660;-1.2%</span>
+                <span class="px-1 text-gray-700">|</span>
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-green-400">AAPL $198.11 &#9650;+0.45%</span>
+                <span class="px-1 text-gray-700">|</span>
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-green-400">GBP/USD 1.2734 &#9650;+0.08%</span>
+                <span class="px-1 text-gray-700">|</span>
+                <span class="inline-flex items-center gap-1 px-2 whitespace-nowrap text-red-400">ETH/USD $3,847 &#9660;-0.5%</span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- 2. DASHBOARD HERO                                             -->
+<!-- ============================================================ -->
+<section id="dashboard" class="pt-28 md:pt-20 pb-10 bg-navy">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 pt-8">
+        <!-- Dashboard grid -->
+        <div class="flex flex-col lg:flex-row gap-5 fade-in">
+            <!-- Left: Performance card (40%) -->
+            <div class="lg:w-[40%] panel rounded-xl p-6 sm:p-8 flex flex-col justify-center">
+                <p class="text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3">Annual Return</p>
+                <p class="text-5xl sm:text-6xl font-black text-amber-400 leading-none mb-5">+47.3%</p>
+                <div class="flex flex-wrap gap-x-5 gap-y-2 text-sm mb-6">
+                    <div>
+                        <span class="text-gray-500">Win Rate</span>
+                        <span class="text-gray-200 font-semibold ml-1.5">68%</span>
+                    </div>
+                    <div class="text-gray-700">|</div>
+                    <div>
+                        <span class="text-gray-500">Sharpe</span>
+                        <span class="text-gray-200 font-semibold ml-1.5">1.87</span>
+                    </div>
+                    <div class="text-gray-700">|</div>
+                    <div>
+                        <span class="text-gray-500">Max DD</span>
+                        <span class="text-red-400 font-semibold ml-1.5">-12.3%</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-600">Powered by Multi-Agent AI &mdash; Simulated Results</p>
+            </div>
+
+            <!-- Right: SVG Equity Curve (60%) -->
+            <div class="lg:w-[60%] panel rounded-xl p-4 sm:p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-sm font-semibold text-gray-400">Equity Curve (12 Months)</p>
+                    <span class="text-xs font-mono text-green-400 bg-green-400/10 px-2 py-0.5 rounded">+47.3%</span>
+                </div>
+                <svg viewBox="0 0 700 260" class="w-full h-auto" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <linearGradient id="eqFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#10B981" stop-opacity="0.3"/>
+                            <stop offset="100%" stop-color="#10B981" stop-opacity="0.01"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Grid lines horizontal -->
+                    <line x1="50" y1="30" x2="680" y2="30" class="grid-line"/>
+                    <line x1="50" y1="85" x2="680" y2="85" class="grid-line"/>
+                    <line x1="50" y1="140" x2="680" y2="140" class="grid-line"/>
+                    <line x1="50" y1="195" x2="680" y2="195" class="grid-line"/>
+                    <!-- Grid lines vertical -->
+                    <line x1="155" y1="25" x2="155" y2="200" class="grid-line"/>
+                    <line x1="260" y1="25" x2="260" y2="200" class="grid-line"/>
+                    <line x1="365" y1="25" x2="365" y2="200" class="grid-line"/>
+                    <line x1="470" y1="25" x2="470" y2="200" class="grid-line"/>
+                    <line x1="575" y1="25" x2="575" y2="200" class="grid-line"/>
+                    <!-- Y labels -->
+                    <text x="44" y="200" text-anchor="end" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">$10k</text>
+                    <text x="44" y="145" text-anchor="end" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">$20k</text>
+                    <text x="44" y="90" text-anchor="end" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">$30k</text>
+                    <text x="44" y="35" text-anchor="end" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">$40k</text>
+                    <!-- X labels -->
+                    <text x="50" y="222" text-anchor="middle" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">Jan</text>
+                    <text x="155" y="222" text-anchor="middle" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">Mar</text>
+                    <text x="260" y="222" text-anchor="middle" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">May</text>
+                    <text x="365" y="222" text-anchor="middle" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">Jul</text>
+                    <text x="470" y="222" text-anchor="middle" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">Sep</text>
+                    <text x="575" y="222" text-anchor="middle" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">Nov</text>
+                    <!-- Equity fill -->
+                    <polygon
+                        points="50,195 103,188 155,178 208,170 260,162 312,155 365,140 418,125 470,110 522,95 575,72 628,58 680,42 680,195"
+                        fill="url(#eqFill)"
+                    />
+                    <!-- Equity line -->
+                    <polyline
+                        points="50,195 103,188 155,178 208,170 260,162 312,155 365,140 418,125 470,110 522,95 575,72 628,58 680,42"
+                        fill="none"
+                        stroke="#10B981"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="equity-line"
+                    />
+                    <!-- End dot -->
+                    <circle cx="680" cy="42" r="4" fill="#10B981"/>
+                    <circle cx="680" cy="42" r="7" fill="none" stroke="#10B981" stroke-width="1" opacity="0.4"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Sparklines row -->
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 mt-5 fade-in">
+            <!-- EUR/USD -->
+            <div class="sparkline-card rounded-lg px-3 py-2.5 text-center">
+                <p class="text-[10px] text-gray-500 font-semibold tracking-wide mb-1">EUR/USD</p>
+                <svg viewBox="0 0 60 20" class="w-full h-5 mx-auto">
+                    <polyline points="0,14 8,12 16,10 24,13 32,8 40,9 48,5 60,3" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <p class="text-[10px] text-green-400 font-mono mt-0.5">+0.12%</p>
+            </div>
+            <!-- GBP/USD -->
+            <div class="sparkline-card rounded-lg px-3 py-2.5 text-center">
+                <p class="text-[10px] text-gray-500 font-semibold tracking-wide mb-1">GBP/USD</p>
+                <svg viewBox="0 0 60 20" class="w-full h-5 mx-auto">
+                    <polyline points="0,15 10,12 20,14 30,9 40,11 50,6 60,4" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <p class="text-[10px] text-green-400 font-mono mt-0.5">+0.08%</p>
+            </div>
+            <!-- BTC/USD -->
+            <div class="sparkline-card rounded-lg px-3 py-2.5 text-center">
+                <p class="text-[10px] text-gray-500 font-semibold tracking-wide mb-1">BTC/USD</p>
+                <svg viewBox="0 0 60 20" class="w-full h-5 mx-auto">
+                    <polyline points="0,6 10,4 20,8 30,5 40,10 50,14 60,16" fill="none" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <p class="text-[10px] text-red-400 font-mono mt-0.5">-1.2%</p>
+            </div>
+            <!-- ETH/USD -->
+            <div class="sparkline-card rounded-lg px-3 py-2.5 text-center">
+                <p class="text-[10px] text-gray-500 font-semibold tracking-wide mb-1">ETH/USD</p>
+                <svg viewBox="0 0 60 20" class="w-full h-5 mx-auto">
+                    <polyline points="0,8 10,5 20,9 30,7 40,12 50,15 60,17" fill="none" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <p class="text-[10px] text-red-400 font-mono mt-0.5">-0.5%</p>
+            </div>
+            <!-- AAPL -->
+            <div class="sparkline-card rounded-lg px-3 py-2.5 text-center">
+                <p class="text-[10px] text-gray-500 font-semibold tracking-wide mb-1">AAPL</p>
+                <svg viewBox="0 0 60 20" class="w-full h-5 mx-auto">
+                    <polyline points="0,16 10,14 20,12 30,10 40,8 50,5 60,3" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <p class="text-[10px] text-green-400 font-mono mt-0.5">+0.45%</p>
+            </div>
+            <!-- TSLA -->
+            <div class="sparkline-card rounded-lg px-3 py-2.5 text-center">
+                <p class="text-[10px] text-gray-500 font-semibold tracking-wide mb-1">TSLA</p>
+                <svg viewBox="0 0 60 20" class="w-full h-5 mx-auto">
+                    <polyline points="0,13 10,10 20,14 30,8 40,6 50,4 60,2" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <p class="text-[10px] text-green-400 font-mono mt-0.5">+1.1%</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 3. ASSET CLASSES                                              -->
+<!-- ============================================================ -->
+<section id="assets" class="py-16 sm:py-20 bg-navy">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-100 mb-2 text-center fade-in">Supported Asset Classes</h2>
+        <p class="text-gray-500 text-sm text-center mb-10 fade-in">Trade across global markets from a single unified platform</p>
+
+        <div class="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
+            <!-- Forex -->
+            <div class="panel asset-forex rounded-xl p-6 fade-in">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-amber-400">Forex</h3>
+                </div>
+                <ul class="space-y-2.5 text-sm">
+                    <li class="flex items-center justify-between text-gray-300"><span>EUR/USD</span><span class="text-xs font-mono text-gray-500">1.0847</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>GBP/USD</span><span class="text-xs font-mono text-gray-500">1.2734</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>USD/JPY</span><span class="text-xs font-mono text-gray-500">149.85</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>AUD/USD</span><span class="text-xs font-mono text-gray-500">0.6542</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>USD/CHF</span><span class="text-xs font-mono text-gray-500">0.8817</span></li>
+                </ul>
+            </div>
+
+            <!-- Stocks -->
+            <div class="panel asset-stocks rounded-xl p-6 fade-in">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-blue-400">Stocks</h3>
+                </div>
+                <ul class="space-y-2.5 text-sm">
+                    <li class="flex items-center justify-between text-gray-300"><span>AAPL</span><span class="text-xs font-mono text-gray-500">$198.11</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>TSLA</span><span class="text-xs font-mono text-gray-500">$241.30</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>MSFT</span><span class="text-xs font-mono text-gray-500">$422.86</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>AMZN</span><span class="text-xs font-mono text-gray-500">$186.49</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>NVDA</span><span class="text-xs font-mono text-gray-500">$875.28</span></li>
+                </ul>
+            </div>
+
+            <!-- Crypto -->
+            <div class="panel asset-crypto rounded-xl p-6 fade-in">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-green-400">Crypto</h3>
+                </div>
+                <ul class="space-y-2.5 text-sm">
+                    <li class="flex items-center justify-between text-gray-300"><span>BTC</span><span class="text-xs font-mono text-gray-500">$67,432</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>ETH</span><span class="text-xs font-mono text-gray-500">$3,847</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>SOL</span><span class="text-xs font-mono text-gray-500">$138.50</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>AVAX</span><span class="text-xs font-mono text-gray-500">$36.20</span></li>
+                    <li class="flex items-center justify-between text-gray-300"><span>MATIC</span><span class="text-xs font-mono text-gray-500">$0.782</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 4. STRATEGY PIPELINE                                          -->
+<!-- ============================================================ -->
+<section id="pipeline" class="py-16 sm:py-20 bg-[#0D1117]">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-100 mb-2 text-center fade-in">Strategy Pipeline</h2>
+        <p class="text-gray-500 text-sm text-center mb-12 fade-in">End-to-end from market data to trade execution</p>
+
+        <div class="space-y-10">
+            <!-- Step 1 -->
+            <div class="flex gap-5 sm:gap-7 fade-in">
+                <div class="shrink-0">
+                    <span class="block text-5xl sm:text-6xl font-black text-amber-400/90 leading-none">1</span>
+                </div>
+                <div class="pt-1">
+                    <h3 class="text-lg font-bold text-gray-100 mb-1">Data Collection</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">100+ technical indicators across multiple timeframes. Real-time feeds from forex brokers, stock exchanges, and cryptocurrency platforms aggregated into a unified data pipeline.</p>
+                </div>
+            </div>
+            <!-- Step 2 -->
+            <div class="flex gap-5 sm:gap-7 fade-in">
+                <div class="shrink-0">
+                    <span class="block text-5xl sm:text-6xl font-black text-amber-400/90 leading-none">2</span>
+                </div>
+                <div class="pt-1">
+                    <h3 class="text-lg font-bold text-gray-100 mb-1">Multi-Agent Analysis</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">3 specialized AI agents &mdash; technical, fundamental, and sentiment &mdash; independently analyze market conditions and vote on trade direction with confidence scores.</p>
+                </div>
+            </div>
+            <!-- Step 3 -->
+            <div class="flex gap-5 sm:gap-7 fade-in">
+                <div class="shrink-0">
+                    <span class="block text-5xl sm:text-6xl font-black text-amber-400/90 leading-none">3</span>
+                </div>
+                <div class="pt-1">
+                    <h3 class="text-lg font-bold text-gray-100 mb-1">Kelly Criterion Sizing</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Mathematically optimal position sizing based on edge. The Kelly formula calculates exact bet fractions to maximize long-term compound growth while bounding risk.</p>
+                </div>
+            </div>
+            <!-- Step 4 -->
+            <div class="flex gap-5 sm:gap-7 fade-in">
+                <div class="shrink-0">
+                    <span class="block text-5xl sm:text-6xl font-black text-amber-400/90 leading-none">4</span>
+                </div>
+                <div class="pt-1">
+                    <h3 class="text-lg font-bold text-gray-100 mb-1">Risk Management</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Dynamic stop-loss and take-profit levels adapt to volatility. Portfolio-level drawdown limits and correlation-aware exposure caps prevent catastrophic losses.</p>
+                </div>
+            </div>
+            <!-- Step 5 -->
+            <div class="flex gap-5 sm:gap-7 fade-in">
+                <div class="shrink-0">
+                    <span class="block text-5xl sm:text-6xl font-black text-amber-400/90 leading-none">5</span>
+                </div>
+                <div class="pt-1">
+                    <h3 class="text-lg font-bold text-gray-100 mb-1">Trade Execution</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Direct MT5 integration with sub-second order execution. Smart order routing across multiple brokers and exchanges minimizes slippage and ensures best-price fills.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 5. TRADING TERMINAL TABLE                                     -->
+<!-- ============================================================ -->
+<section id="terminal" class="py-16 sm:py-20 bg-navy">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-100 mb-2 text-center fade-in">Trading Terminal</h2>
+        <p class="text-gray-500 text-sm text-center mb-10 fade-in">Live signals and performance across all tracked instruments</p>
+
+        <div class="panel rounded-xl overflow-hidden fade-in">
+            <div class="overflow-x-auto">
+                <table class="terminal-table w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-xs text-gray-500 uppercase tracking-wider">
+                            <th class="px-4 sm:px-6 py-3 font-semibold">Pair</th>
+                            <th class="px-4 sm:px-6 py-3 font-semibold">Last Signal</th>
+                            <th class="px-4 sm:px-6 py-3 font-semibold text-right">Entry</th>
+                            <th class="px-4 sm:px-6 py-3 font-semibold text-right">Current</th>
+                            <th class="px-4 sm:px-6 py-3 font-semibold text-right">P&amp;L</th>
+                            <th class="px-4 sm:px-6 py-3 font-semibold text-right">Win Rate</th>
+                            <th class="px-4 sm:px-6 py-3 font-semibold text-right">Trades</th>
+                        </tr>
+                    </thead>
+                    <tbody class="font-mono text-[13px]">
+                        <tr>
+                            <td class="px-4 sm:px-6 py-3 font-sans font-semibold text-gray-200">EUR/USD</td>
+                            <td class="px-4 sm:px-6 py-3"><span class="bg-green-500/10 text-green-400 text-xs font-bold px-2 py-0.5 rounded">BUY</span></td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">1.0812</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-200">1.0847</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-green-400 font-semibold">+3.2%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-300">72%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">145</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 sm:px-6 py-3 font-sans font-semibold text-gray-200">GBP/USD</td>
+                            <td class="px-4 sm:px-6 py-3"><span class="bg-red-500/10 text-red-400 text-xs font-bold px-2 py-0.5 rounded">SELL</span></td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">1.2801</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-200">1.2734</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-green-400 font-semibold">+5.1%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-300">65%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">98</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 sm:px-6 py-3 font-sans font-semibold text-gray-200">BTC/USD</td>
+                            <td class="px-4 sm:px-6 py-3"><span class="bg-green-500/10 text-green-400 text-xs font-bold px-2 py-0.5 rounded">BUY</span></td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">64,200</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-200">67,432</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-green-400 font-semibold">+5.0%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-300">58%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">67</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 sm:px-6 py-3 font-sans font-semibold text-gray-200">ETH/USD</td>
+                            <td class="px-4 sm:px-6 py-3"><span class="bg-gray-500/10 text-gray-400 text-xs font-bold px-2 py-0.5 rounded">HOLD</span></td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">3,612</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-200">3,847</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-green-400 font-semibold">+6.5%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-300">61%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">54</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 sm:px-6 py-3 font-sans font-semibold text-gray-200">USD/JPY</td>
+                            <td class="px-4 sm:px-6 py-3"><span class="bg-red-500/10 text-red-400 text-xs font-bold px-2 py-0.5 rounded">SELL</span></td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">151.20</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-200">149.85</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-green-400 font-semibold">+0.9%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-300">69%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">112</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 sm:px-6 py-3 font-sans font-semibold text-gray-200">AAPL</td>
+                            <td class="px-4 sm:px-6 py-3"><span class="bg-green-500/10 text-green-400 text-xs font-bold px-2 py-0.5 rounded">BUY</span></td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">189.50</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-200">198.11</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-green-400 font-semibold">+4.5%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-300">71%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">83</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 sm:px-6 py-3 font-sans font-semibold text-gray-200">TSLA</td>
+                            <td class="px-4 sm:px-6 py-3"><span class="bg-red-500/10 text-red-400 text-xs font-bold px-2 py-0.5 rounded">SELL</span></td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">248.00</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-200">241.30</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-green-400 font-semibold">+2.7%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-300">55%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">76</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 sm:px-6 py-3 font-sans font-semibold text-gray-200">SOL/USD</td>
+                            <td class="px-4 sm:px-6 py-3"><span class="bg-green-500/10 text-green-400 text-xs font-bold px-2 py-0.5 rounded">BUY</span></td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">142.00</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-200">138.50</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-red-400 font-semibold">-2.5%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-300">52%</td>
+                            <td class="px-4 sm:px-6 py-3 text-right text-gray-400">41</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 6. RISK DISCLAIMER                                            -->
+<!-- ============================================================ -->
+<section class="py-16 sm:py-20 bg-[#0D1117]">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 fade-in">
+        <div class="risk-box rounded-xl p-6 sm:p-8">
+            <div class="flex items-start gap-4">
+                <!-- Warning icon -->
+                <div class="shrink-0 mt-0.5">
+                    <svg class="w-7 h-7 text-amber-400" fill="none" viewBox="0 0 24 24">
+                        <path d="M12 2L1 21h22L12 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                        <path d="M12 9v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="12" cy="17" r="1" fill="currentColor"/>
                     </svg>
                 </div>
-                <span class="text-lg font-bold gradient-text">Ultimate Trading Bot</span>
-            </div>
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#features" class="text-gray-400 hover:text-amber-400 transition-colors text-sm">Features</a>
-                <a href="#architecture" class="text-gray-400 hover:text-amber-400 transition-colors text-sm">Architecture</a>
-                <a href="#tech-stack" class="text-gray-400 hover:text-amber-400 transition-colors text-sm">Tech Stack</a>
-                <a href="#performance" class="text-gray-400 hover:text-amber-400 transition-colors text-sm">Performance</a>
-                <a href="https://github.com/ezekaj/forex_2026" target="_blank" class="btn-primary px-4 py-2 rounded-lg text-dark font-semibold text-sm">GitHub</a>
+                <div>
+                    <h3 class="text-sm font-bold text-amber-400 tracking-wider uppercase mb-3">Important Risk Disclosure</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Trading forex, stocks, and cryptocurrency involves substantial risk of loss and is not suitable for all investors. Past performance shown on this page is simulated and does not guarantee future results. This is a research and educational tool, not financial advice. Never trade with money you cannot afford to lose.
+                    </p>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
+</section>
 
-    <!-- Hero Section -->
-    <section class="hero-gradient min-h-screen flex items-center relative overflow-hidden">
-        <div class="absolute inset-0">
-            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"></div>
-        </div>
-        <div class="max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10">
-            <div class="text-center max-w-4xl mx-auto">
-                <div class="flex justify-center gap-3 mb-8 flex-wrap fade-in">
-                    <span class="badge px-4 py-1.5 rounded-full text-amber-400 text-sm font-medium">3 Asset Classes</span>
-                    <span class="badge px-4 py-1.5 rounded-full text-amber-400 text-sm font-medium">Multi-Agent AI</span>
-                    <span class="badge px-4 py-1.5 rounded-full text-amber-400 text-sm font-medium">Real-Time Dashboard</span>
-                </div>
-                <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight fade-in">
-                    <span class="gradient-text">Ultimate</span><br>
-                    <span class="text-gray-100">Trading Bot</span>
-                </h1>
-                <p class="text-xl md:text-2xl text-amber-400/90 font-medium mb-6 fade-in">
-                    AI-Powered Multi-Asset Trading Platform
-                </p>
-                <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed fade-in">
-                    An AI-powered trading platform for forex, stocks, and cryptocurrency markets. Uses multi-agent decision making with real-time dashboards, comprehensive backtesting, and Kelly Criterion risk management for optimal position sizing.
-                </p>
-                <div class="flex justify-center gap-4 flex-wrap fade-in">
-                    <a href="https://github.com/ezekaj/forex_2026" target="_blank" class="btn-primary px-8 py-3.5 rounded-xl text-dark font-bold text-lg inline-flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                        View on GitHub
-                    </a>
-                    <a href="https://zedigital.tech" target="_blank" class="btn-secondary px-8 py-3.5 rounded-xl text-amber-400 font-bold text-lg inline-flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                        Portfolio
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-dark to-transparent"></div>
-    </section>
+<!-- ============================================================ -->
+<!-- 7. PRICING                                                    -->
+<!-- ============================================================ -->
+<section id="pricing" class="py-16 sm:py-20 bg-navy">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-100 mb-2 text-center fade-in">Pricing</h2>
+        <p class="text-gray-500 text-sm text-center mb-10 fade-in">Start free, upgrade when you are ready to trade live</p>
 
-    <!-- Features Section -->
-    <section id="features" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16 fade-in">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                    <span class="gradient-text">Core Features</span>
-                </h2>
-                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Advanced trading capabilities powered by artificial intelligence and quantitative analysis</p>
+        <div class="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto">
+            <!-- Paper Trading -->
+            <div class="panel rounded-xl p-6 border-t-[3px] border-green-500 fade-in">
+                <h3 class="text-lg font-bold text-green-400 mb-1">Paper Trading</h3>
+                <div class="flex items-baseline gap-1 mb-5">
+                    <span class="text-3xl font-black text-gray-100">Free</span>
+                </div>
+                <ul class="space-y-3 text-sm text-gray-400 mb-6">
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Simulated trading environment
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        All trading pairs
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Basic dashboard
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Community support
+                    </li>
+                </ul>
+                <a href="#" class="block text-center py-2.5 rounded-lg border border-green-500/30 text-green-400 text-sm font-semibold hover:bg-green-500/10 transition-colors">Get Started</a>
             </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Feature 1 -->
-                <div class="glass-card rounded-2xl p-8 fade-in">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-5">
-                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-100 mb-3">Multi-Asset Support</h3>
-                    <p class="text-gray-400 leading-relaxed">Trade forex pairs, stocks, and cryptocurrencies from a single unified platform</p>
-                </div>
-                <!-- Feature 2 -->
-                <div class="glass-card rounded-2xl p-8 fade-in">
-                    <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-5">
-                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-100 mb-3">Multi-Agent Decision Making</h3>
-                    <p class="text-gray-400 leading-relaxed">Specialized AI agents analyze different market aspects and reach consensus on trading signals</p>
-                </div>
-                <!-- Feature 3 -->
-                <div class="glass-card rounded-2xl p-8 fade-in">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-5">
-                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-100 mb-3">Real-Time Dashboards</h3>
-                    <p class="text-gray-400 leading-relaxed">Live market data visualization, portfolio performance tracking, and trade execution monitoring</p>
-                </div>
-                <!-- Feature 4 -->
-                <div class="glass-card rounded-2xl p-8 fade-in">
-                    <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-5">
-                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-100 mb-3">Backtesting Engine</h3>
-                    <p class="text-gray-400 leading-relaxed">Test strategies against historical data with detailed performance reports and drawdown analysis</p>
-                </div>
-                <!-- Feature 5 -->
-                <div class="glass-card rounded-2xl p-8 fade-in">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-5">
-                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-100 mb-3">Kelly Criterion Risk Management</h3>
-                    <p class="text-gray-400 leading-relaxed">Mathematically optimal position sizing based on edge and variance for maximum long-term growth</p>
-                </div>
-                <!-- Feature 6 -->
-                <div class="glass-card rounded-2xl p-8 fade-in">
-                    <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-5">
-                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-100 mb-3">MT5 Integration</h3>
-                    <p class="text-gray-400 leading-relaxed">Direct connection to MetaTrader 5 for professional-grade forex execution and market data</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Architecture Section -->
-    <section id="architecture" class="py-24 relative">
-        <div class="absolute inset-0">
-            <div class="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/10 to-transparent"></div>
-        </div>
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="text-center mb-16 fade-in">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                    <span class="gradient-text">Trading Pipeline</span>
-                </h2>
-                <p class="text-gray-400 text-lg max-w-2xl mx-auto">End-to-end architecture from market data ingestion to trade execution</p>
+            <!-- Trader (highlighted) -->
+            <div class="panel rounded-xl p-6 pricing-highlight fade-in">
+                <h3 class="text-lg font-bold text-amber-400 mb-1">Trader</h3>
+                <div class="flex items-baseline gap-1 mb-5">
+                    <span class="text-3xl font-black text-gray-100">$49</span>
+                    <span class="text-sm text-gray-500">/mo</span>
+                </div>
+                <ul class="space-y-3 text-sm text-gray-400 mb-6">
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Live trading
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Real-time signals
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Full dashboard
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        MT5 integration
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Email support
+                    </li>
+                </ul>
+                <a href="#" class="block text-center py-2.5 rounded-lg btn-cta text-sm">Start Trading</a>
             </div>
-            <div class="max-w-3xl mx-auto space-y-4">
-                <!-- Step 1 -->
-                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-dark font-bold text-sm">1</div>
-                    <div>
-                        <h3 class="text-lg font-bold text-amber-400 mb-1">Market Data</h3>
-                        <p class="text-gray-400">Real-time feeds from multiple exchanges and brokers</p>
-                    </div>
-                </div>
-                <!-- Arrow -->
-                <div class="flex justify-center">
-                    <svg class="w-6 h-6 text-amber-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                </div>
-                <!-- Step 2 -->
-                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-green-500 flex items-center justify-center text-dark font-bold text-sm">2</div>
-                    <div>
-                        <h3 class="text-lg font-bold text-amber-400 mb-1">AI Analysis</h3>
-                        <p class="text-gray-400">Multi-agent system processes technical, fundamental, and sentiment signals</p>
-                    </div>
-                </div>
-                <!-- Arrow -->
-                <div class="flex justify-center">
-                    <svg class="w-6 h-6 text-amber-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                </div>
-                <!-- Step 3 -->
-                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-amber-500 flex items-center justify-center text-dark font-bold text-sm">3</div>
-                    <div>
-                        <h3 class="text-lg font-bold text-green-400 mb-1">Signal Generation</h3>
-                        <p class="text-gray-400">Consensus algorithm produces trading signals with confidence scores</p>
-                    </div>
-                </div>
-                <!-- Arrow -->
-                <div class="flex justify-center">
-                    <svg class="w-6 h-6 text-green-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                </div>
-                <!-- Step 4 -->
-                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-dark font-bold text-sm">4</div>
-                    <div>
-                        <h3 class="text-lg font-bold text-green-400 mb-1">Risk Assessment</h3>
-                        <p class="text-gray-400">Kelly Criterion calculates optimal position sizes</p>
-                    </div>
-                </div>
-                <!-- Arrow -->
-                <div class="flex justify-center">
-                    <svg class="w-6 h-6 text-green-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                </div>
-                <!-- Step 5 -->
-                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-dark font-bold text-sm">5</div>
-                    <div>
-                        <h3 class="text-lg font-bold text-amber-400 mb-1">Trade Execution</h3>
-                        <p class="text-gray-400">Orders sent via MT5 or exchange APIs</p>
-                    </div>
-                </div>
-                <!-- Arrow -->
-                <div class="flex justify-center">
-                    <svg class="w-6 h-6 text-amber-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                </div>
-                <!-- Step 6 -->
-                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
-                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-amber-500 flex items-center justify-center text-dark font-bold text-sm">6</div>
-                    <div>
-                        <h3 class="text-lg font-bold text-green-400 mb-1">Dashboard</h3>
-                        <p class="text-gray-400">Real-time P&L, positions, and performance metrics</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Tech Stack Section -->
-    <section id="tech-stack" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16 fade-in">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                    <span class="gradient-text">Tech Stack</span>
-                </h2>
-                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Built with modern technologies for performance, reliability, and scalability</p>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
-                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
-                    <div class="text-amber-400 font-bold text-sm mb-2">Backend</div>
-                    <div class="text-gray-300 text-xs leading-relaxed">Python<br>FastAPI</div>
+            <!-- Pro -->
+            <div class="panel rounded-xl p-6 border-t-[3px] border-blue-500 fade-in">
+                <h3 class="text-lg font-bold text-blue-400 mb-1">Pro</h3>
+                <div class="flex items-baseline gap-1 mb-5">
+                    <span class="text-3xl font-black text-gray-100">$149</span>
+                    <span class="text-sm text-gray-500">/mo</span>
                 </div>
-                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
-                    <div class="text-amber-400 font-bold text-sm mb-2">Frontend</div>
-                    <div class="text-gray-300 text-xs leading-relaxed">React<br>Real-time Charts</div>
-                </div>
-                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
-                    <div class="text-green-400 font-bold text-sm mb-2">Database</div>
-                    <div class="text-gray-300 text-xs leading-relaxed">PostgreSQL<br>Redis</div>
-                </div>
-                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
-                    <div class="text-green-400 font-bold text-sm mb-2">AI</div>
-                    <div class="text-gray-300 text-xs leading-relaxed">Gemini 3.0<br>Multi-Agent</div>
-                </div>
-                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
-                    <div class="text-amber-400 font-bold text-sm mb-2">Trading</div>
-                    <div class="text-gray-300 text-xs leading-relaxed">MT5 API<br>Exchange APIs</div>
-                </div>
-                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
-                    <div class="text-green-400 font-bold text-sm mb-2">Analysis</div>
-                    <div class="text-gray-300 text-xs leading-relaxed">Kelly Criterion<br>Backtesting</div>
-                </div>
+                <ul class="space-y-3 text-sm text-gray-400 mb-6">
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Everything in Trader
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        API access
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Custom strategies
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        Priority support
+                    </li>
+                    <li class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        White-label option
+                    </li>
+                </ul>
+                <a href="#" class="block text-center py-2.5 rounded-lg border border-blue-500/30 text-blue-400 text-sm font-semibold hover:bg-blue-500/10 transition-colors">Contact Sales</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Performance Stats Section -->
-    <section id="performance" class="py-24 relative">
-        <div class="absolute inset-0">
-            <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"></div>
-            <div class="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl"></div>
-        </div>
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="text-center mb-16 fade-in">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                    <span class="gradient-text">Platform Highlights</span>
-                </h2>
-                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Key capabilities that set this trading platform apart</p>
-            </div>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
-                <div class="stat-card rounded-2xl p-8 text-center fade-in">
-                    <div class="text-4xl md:text-5xl font-black gradient-text mb-2">3</div>
-                    <div class="text-gray-400 text-sm font-medium">Asset Classes</div>
-                </div>
-                <div class="stat-card rounded-2xl p-8 text-center fade-in">
-                    <div class="text-4xl md:text-5xl font-black gradient-text-green mb-2">Multi</div>
-                    <div class="text-gray-400 text-sm font-medium">Agent Architecture</div>
-                </div>
-                <div class="stat-card rounded-2xl p-8 text-center fade-in">
-                    <div class="text-4xl md:text-5xl font-black gradient-text mb-2">Real-Time</div>
-                    <div class="text-gray-400 text-sm font-medium">Data Processing</div>
-                </div>
-                <div class="stat-card rounded-2xl p-8 text-center fade-in">
-                    <div class="text-4xl md:text-5xl font-black gradient-text-green mb-2">Kelly</div>
-                    <div class="text-gray-400 text-sm font-medium">Risk Management</div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ============================================================ -->
+<!-- 8. CTA                                                        -->
+<!-- ============================================================ -->
+<section class="py-16 sm:py-20 bg-[#0D1117]">
+    <div class="max-w-xl mx-auto px-4 sm:px-6 text-center fade-in">
+        <a href="#" class="inline-block btn-cta px-10 py-4 rounded-xl text-lg font-bold">Start Paper Trading &mdash; Free Forever</a>
+        <p class="text-gray-500 text-sm mt-4">No credit card required</p>
+    </div>
+</section>
 
-    <!-- CTA Section -->
-    <section class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="glass-card rounded-3xl p-12 md:p-16 text-center relative overflow-hidden fade-in">
-                <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-green-500/5"></div>
-                <div class="relative z-10">
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-100 mb-4">Explore the Codebase</h2>
-                    <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-8">Dive into the source code and see how AI-powered trading works under the hood</p>
-                    <div class="flex justify-center gap-4 flex-wrap">
-                        <a href="https://github.com/ezekaj/forex_2026" target="_blank" class="btn-primary px-8 py-3.5 rounded-xl text-dark font-bold text-lg inline-flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                            View Repository
-                        </a>
-                        <a href="https://zedigital.tech" target="_blank" class="btn-secondary px-8 py-3.5 rounded-xl text-amber-400 font-bold text-lg inline-flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                            Visit Portfolio
-                        </a>
-                    </div>
-                </div>
+<!-- ============================================================ -->
+<!-- 9. FOOTER                                                     -->
+<!-- ============================================================ -->
+<footer class="py-10 bg-navy border-t border-white/5">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-5">
+            <div class="flex items-center gap-5 text-sm">
+                <a href="https://github.com/ezekaj/forex_2026" target="_blank" class="text-gray-500 hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    GitHub
+                </a>
+                <a href="https://zedigital.tech" target="_blank" class="text-gray-500 hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                    Portfolio
+                </a>
             </div>
+            <p class="text-gray-600 text-xs text-center sm:text-right">
+                Built by Z.E Digital Tech
+            </p>
         </div>
-    </section>
+        <p class="text-gray-700 text-[11px] text-center mt-6">Past performance is not indicative of future results.</p>
+    </div>
+</footer>
 
-    <!-- Footer -->
-    <footer class="py-12 border-t border-amber-500/10">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-dark" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                    </div>
-                    <span class="text-gray-400 text-sm">Built by <span class="text-amber-400 font-semibold">ELO</span> from <a href="https://zedigital.tech" target="_blank" class="text-amber-400 hover:text-amber-300 font-semibold transition-colors">Z.E Digital Tech</a></span>
-                </div>
-                <div class="flex items-center gap-6">
-                    <a href="https://github.com/ezekaj/forex_2026" target="_blank" class="text-gray-500 hover:text-amber-400 transition-colors">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    </a>
-                    <a href="https://zedigital.tech" target="_blank" class="text-gray-500 hover:text-amber-400 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
+<!-- ============================================================ -->
+<!-- SCRIPTS                                                       -->
+<!-- ============================================================ -->
+<script>
+    // Hamburger menu
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    hamburgerBtn.addEventListener('click', () => {
+        hamburgerBtn.classList.toggle('active');
+        mobileMenu.classList.toggle('open');
+    });
 
-    <!-- Fade-in Animation Script -->
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, index * 80);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+    // Close mobile menu on link click
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburgerBtn.classList.remove('active');
+            mobileMenu.classList.remove('open');
         });
+    });
 
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-    </script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Intersection observer for fade-in
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, idx) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, idx * 60);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
 </body>
 </html>
