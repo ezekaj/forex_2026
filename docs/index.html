@@ -229,6 +229,10 @@
             </div>
 
             <div class="flex items-center gap-3">
+                <span id="api-status" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono px-2.5 py-1 rounded-lg border border-white/10 text-gray-500">
+                    <span id="api-dot" class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+                    <span id="api-label">API</span>
+                </span>
                 <a href="#trading-platform" class="hidden sm:inline-flex btn-cta px-5 py-2 rounded-lg text-sm">Start Trading</a>
                 <button id="hamburger-btn" class="hamburger md:hidden flex flex-col gap-1.5 p-2" aria-label="Menu">
                     <span class="hamburger-line"></span>
@@ -286,7 +290,7 @@
                         <span id="hero-winrate" class="text-gray-200 font-semibold ml-1.5">--</span>
                     </div>
                 </div>
-                <p class="text-xs text-gray-600">Paper Trading &mdash; Powered by CoinGecko Live Data</p>
+                <p class="text-xs text-gray-600">Paper Trading &mdash; Server-Backed Portfolio with Live Market Data</p>
             </div>
 
             <div class="lg:w-[60%] panel rounded-xl p-4 sm:p-6">
@@ -395,7 +399,11 @@
                             <option value="bitcoin">BTC - Bitcoin</option>
                             <option value="ethereum">ETH - Ethereum</option>
                             <option value="solana">SOL - Solana</option>
-                            <option value="ripple">XRP - Ripple</option>
+                            <option value="binancecoin">BNB - BNB</option>
+                            <option value="cardano">ADA - Cardano</option>
+                            <option value="polkadot">DOT - Polkadot</option>
+                            <option value="avalanche-2">AVAX - Avalanche</option>
+                            <option value="matic-network">MATIC - Polygon</option>
                         </select>
                     </div>
                     <div>
@@ -485,8 +493,9 @@
                         <label class="text-xs text-gray-500 mb-1 block">Strategy</label>
                         <select id="backtest-strategy" class="w-full bg-surface border border-white/10 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-amber-500/50">
                             <option value="ma_crossover">MA Crossover (20/50)</option>
-                            <option value="rsi_reversal">RSI Reversal (30/70)</option>
-                            <option value="macd_signal">MACD Signal</option>
+                            <option value="rsi">RSI Reversal (30/70)</option>
+                            <option value="macd">MACD Signal</option>
+                            <option value="bollinger_bands">Bollinger Bands</option>
                         </select>
                     </div>
                     <div>
@@ -495,7 +504,11 @@
                             <option value="bitcoin">Bitcoin (BTC)</option>
                             <option value="ethereum">Ethereum (ETH)</option>
                             <option value="solana">Solana (SOL)</option>
-                            <option value="ripple">Ripple (XRP)</option>
+                            <option value="binancecoin">BNB (BNB)</option>
+                            <option value="cardano">Cardano (ADA)</option>
+                            <option value="polkadot">Polkadot (DOT)</option>
+                            <option value="avalanche-2">Avalanche (AVAX)</option>
+                            <option value="matic-network">Polygon (MATIC)</option>
                         </select>
                     </div>
                     <div>
@@ -868,15 +881,26 @@
 (function() {
     'use strict';
 
-    // ── State ──────────────────────────────────────────────────
-    const ASSET_LABELS = { bitcoin: 'BTC', ethereum: 'ETH', solana: 'SOL', ripple: 'XRP' };
-    const ASSET_IDS = ['bitcoin', 'ethereum', 'solana', 'ripple'];
+    // ── Config ─────────────────────────────────────────────────
+    const API_BASE = 'https://zedigital-trading-bot.fly.dev';
+    const WS_URL = 'wss://zedigital-trading-bot.fly.dev/ws/prices';
+    const COINGECKO_BASE = 'https://api.coingecko.com/api/v3';
+
+    const ASSET_LABELS = {
+        bitcoin: 'BTC', ethereum: 'ETH', solana: 'SOL', ripple: 'XRP',
+        binancecoin: 'BNB', cardano: 'ADA', polkadot: 'DOT',
+        'avalanche-2': 'AVAX', 'matic-network': 'MATIC'
+    };
+    const TICKER_IDS = ['bitcoin', 'ethereum', 'solana', 'ripple'];
     const INITIAL_BALANCE = 10000;
 
     let currentPrices = {};
     let chartCache = {};
     let currentChartAsset = 'bitcoin';
+    let apiConnected = false;
+    let ws = null;
 
+    // ── State (local fallback) ─────────────────────────────────
     function loadState() {
         try {
             const saved = localStorage.getItem('utb_state');
@@ -910,20 +934,66 @@
         setTimeout(() => el.classList.add('hidden'), duration);
     }
 
-    // ── Fetch Live Prices ──────────────────────────────────────
+    // ── API Status Indicator ───────────────────────────────────
+    function setApiStatus(connected) {
+        apiConnected = connected;
+        const dot = document.getElementById('api-dot');
+        const label = document.getElementById('api-label');
+        if (connected) {
+            dot.className = 'w-1.5 h-1.5 rounded-full bg-green-400';
+            label.textContent = 'API Live';
+            label.className = 'text-green-400';
+        } else {
+            dot.className = 'w-1.5 h-1.5 rounded-full bg-gray-500';
+            label.textContent = 'Fallback';
+            label.className = 'text-gray-500';
+        }
+    }
+
+    // ── Fetch Prices (API first, CoinGecko fallback) ───────────
     async function fetchPrices() {
         try {
-            const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple&vs_currencies=usd&include_24hr_change=true');
+            const resp = await fetch(API_BASE + '/api/prices');
             if (!resp.ok) throw new Error('API error');
+            const data = await resp.json();
+            setApiStatus(true);
+
+            // Normalize API data to match the format used by price cards
+            const prices = data.prices || data;
+            for (const [id, info] of Object.entries(prices)) {
+                currentPrices[id] = {
+                    usd: info.price_usd,
+                    usd_24h_change: info.change_24h,
+                    usd_24h_vol: info.volume_24h,
+                    usd_market_cap: info.market_cap,
+                    symbol: info.symbol
+                };
+            }
+            try { localStorage.setItem('utb_prices', JSON.stringify(currentPrices)); } catch(e) {}
+            document.getElementById('data-notice').classList.add('hidden');
+            updatePriceCards();
+            updateTicker();
+            if (!apiConnected) updatePositionsTable();
+            updateHeroStats();
+            return;
+        } catch(e) {
+            // Fallback to CoinGecko
+        }
+
+        try {
+            const resp = await fetch(COINGECKO_BASE + '/simple/price?ids=bitcoin,ethereum,solana,ripple&vs_currencies=usd&include_24hr_change=true');
+            if (!resp.ok) throw new Error('CoinGecko error');
             const data = await resp.json();
             currentPrices = data;
             try { localStorage.setItem('utb_prices', JSON.stringify(data)); } catch(e) {}
             document.getElementById('data-notice').classList.add('hidden');
+            setApiStatus(false);
             updatePriceCards();
             updateTicker();
             updatePositionsTable();
             updateHeroStats();
         } catch(e) {
+            setApiStatus(false);
             try {
                 const cached = localStorage.getItem('utb_prices');
                 if (cached) {
@@ -936,29 +1006,71 @@
         }
     }
 
+    // ── WebSocket for real-time prices ─────────────────────────
+    function connectWebSocket() {
+        try {
+            ws = new WebSocket(WS_URL);
+            ws.onopen = function() {
+                setApiStatus(true);
+            };
+            ws.onmessage = function(event) {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'prices' && msg.data) {
+                        for (const [id, info] of Object.entries(msg.data)) {
+                            currentPrices[id] = {
+                                usd: info.price_usd,
+                                usd_24h_change: info.change_24h,
+                                usd_24h_vol: info.volume_24h,
+                                usd_market_cap: info.market_cap,
+                                symbol: info.symbol
+                            };
+                        }
+                        updatePriceCards();
+                        updateTicker();
+                        updatePositionsTable();
+                        updateHeroStats();
+                    }
+                } catch(e) {}
+            };
+            ws.onclose = function() {
+                setTimeout(connectWebSocket, 5000);
+            };
+            ws.onerror = function() {
+                ws.close();
+            };
+        } catch(e) {
+            setTimeout(connectWebSocket, 10000);
+        }
+    }
+
     function updatePriceCards() {
-        ASSET_IDS.forEach(id => {
+        TICKER_IDS.forEach(id => {
             const d = currentPrices[id];
             if (!d) return;
             const price = d.usd;
             const change = d.usd_24h_change;
+            if (price === undefined || change === undefined) return;
             const positive = change >= 0;
 
-            document.getElementById('price-' + id).textContent = fmtUsd(price);
+            const priceEl = document.getElementById('price-' + id);
+            if (priceEl) priceEl.textContent = fmtUsd(price);
 
             const badge = document.getElementById('badge-' + id);
-            const arrow = positive ? '\u25B2' : '\u25BC';
-            badge.textContent = arrow + ' ' + (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-            badge.className = 'text-[10px] font-mono px-1.5 py-0.5 rounded ' +
-                (positive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400');
+            if (badge) {
+                const arrow = positive ? '\u25B2' : '\u25BC';
+                badge.textContent = arrow + ' ' + (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+                badge.className = 'text-[10px] font-mono px-1.5 py-0.5 rounded ' +
+                    (positive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400');
+            }
         });
     }
 
     function updateTicker() {
         const items = [];
-        ASSET_IDS.forEach(id => {
+        TICKER_IDS.forEach(id => {
             const d = currentPrices[id];
-            if (!d) return;
+            if (!d || d.usd === undefined) return;
             const positive = d.usd_24h_change >= 0;
             const color = positive ? 'text-green-400' : 'text-red-400';
             const arrow = positive ? '&#9650;' : '&#9660;';
@@ -978,7 +1090,7 @@
             return chartCache[assetId].data;
         }
         try {
-            const resp = await fetch('https://api.coingecko.com/api/v3/coins/' + assetId + '/market_chart?vs_currency=usd&days=7');
+            const resp = await fetch(COINGECKO_BASE + '/coins/' + assetId + '/market_chart?vs_currency=usd&days=7');
             if (!resp.ok) throw new Error('Chart API error');
             const data = await resp.json();
             chartCache[assetId] = { data: data.prices, ts: Date.now() };
@@ -1011,7 +1123,6 @@
             '<stop offset="100%" stop-color="#10B981" stop-opacity="0.01"/>' +
             '</linearGradient></defs>';
 
-        // Grid lines
         for (let i = 0; i <= 4; i++) {
             const y = PAD_T + (i / 4) * chartH;
             html += '<line x1="' + PAD_L + '" y1="' + y + '" x2="' + (W - PAD_R) + '" y2="' + y + '" class="grid-line"/>';
@@ -1023,9 +1134,7 @@
             html += '<text x="' + (PAD_L - 6) + '" y="' + (y + 4) + '" text-anchor="end" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">' + label + '</text>';
         }
 
-        // X labels (7 days)
         const dayMs = 86400000;
-        const startDay = new Date(times[0]);
         for (let d = 0; d < 7; d++) {
             const dayTime = times[0] + d * dayMs;
             const idx = prices.findIndex(p => p[0] >= dayTime);
@@ -1037,7 +1146,6 @@
             }
         }
 
-        // Build polyline points (downsample to ~200 points for performance)
         const step = Math.max(1, Math.floor(prices.length / 200));
         let points = '';
         let fillPoints = '';
@@ -1062,12 +1170,10 @@
         html += '<circle cx="' + lastX + '" cy="' + lastY + '" r="3.5" fill="#10B981"/>';
         html += '<circle cx="' + lastX + '" cy="' + lastY + '" r="6" fill="none" stroke="#10B981" stroke-width="1" opacity="0.4"/>';
 
-        // Invisible hover rects
         html += '<rect id="chart-hover-area" x="' + PAD_L + '" y="' + PAD_T + '" width="' + chartW + '" height="' + chartH + '" fill="transparent" style="cursor:crosshair"/>';
 
         svg.innerHTML = html;
 
-        // Tooltip
         const container = document.getElementById('chart-container');
         const hoverArea = document.getElementById('chart-hover-area');
         const tooltip = document.getElementById('chart-tooltip');
@@ -1113,15 +1219,15 @@
         }
 
         const svg = document.getElementById('price-chart');
-        svg.innerHTML = '<text x="350" y="130" text-anchor="middle" fill="#6B7280" font-size="13" font-family="Inter,sans-serif">Loading ' + ASSET_LABELS[assetId] + ' chart...</text>';
+        svg.innerHTML = '<text x="350" y="130" text-anchor="middle" fill="#6B7280" font-size="13" font-family="Inter,sans-serif">Loading ' + (ASSET_LABELS[assetId] || assetId) + ' chart...</text>';
 
         const data = await fetchChartData(assetId);
         if (data) drawChart(data);
         else svg.innerHTML = '<text x="350" y="130" text-anchor="middle" fill="#EF4444" font-size="13" font-family="Inter,sans-serif">Failed to load chart data</text>';
     };
 
-    // ── Paper Trading ──────────────────────────────────────────
-    window.executeTrade = function(type) {
+    // ── Paper Trading (API-backed with local fallback) ─────────
+    window.executeTrade = async function(type) {
         const asset = document.getElementById('trade-asset').value;
         const amountInput = document.getElementById('trade-amount');
         const amountUsd = parseFloat(amountInput.value);
@@ -1131,6 +1237,33 @@
             return;
         }
 
+        // Try server-side trade first
+        try {
+            const resp = await fetch(API_BASE + '/api/trade', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ coin_id: asset, side: type, amount_usd: amountUsd })
+            });
+            const result = await resp.json();
+
+            if (result.error) {
+                showMsg('trade-error', result.error);
+                return;
+            }
+
+            if (result.success) {
+                const t = result.trade;
+                showMsg('trade-success', (type === 'buy' ? 'Bought ' : 'Sold ') + t.qty.toFixed(6) + ' ' + t.symbol + ' at ' + fmtUsd(t.price));
+                amountInput.value = '';
+                // Sync portfolio from server
+                await syncPortfolioFromServer();
+                return;
+            }
+        } catch(e) {
+            // Fallback to local trading
+        }
+
+        // Local fallback
         const priceData = currentPrices[asset];
         if (!priceData) {
             showMsg('trade-error', 'Price data not available. Wait for market data to load.');
@@ -1146,35 +1279,30 @@
                 return;
             }
             state.cash -= amountUsd;
-
             if (!state.positions[asset]) {
                 state.positions[asset] = { qty: 0, totalCost: 0 };
             }
             state.positions[asset].qty += qty;
             state.positions[asset].totalCost += amountUsd;
-
-            showMsg('trade-success', 'Bought ' + qty.toFixed(6) + ' ' + ASSET_LABELS[asset] + ' at ' + fmtUsd(price));
+            showMsg('trade-success', 'Bought ' + qty.toFixed(6) + ' ' + (ASSET_LABELS[asset] || asset) + ' at ' + fmtUsd(price));
         } else {
             if (!state.positions[asset] || state.positions[asset].qty <= 0) {
-                showMsg('trade-error', 'No ' + ASSET_LABELS[asset] + ' position to sell');
+                showMsg('trade-error', 'No ' + (ASSET_LABELS[asset] || asset) + ' position to sell');
                 return;
             }
             if (qty > state.positions[asset].qty) {
-                showMsg('trade-error', 'Insufficient holdings. You have ' + state.positions[asset].qty.toFixed(6) + ' ' + ASSET_LABELS[asset]);
+                showMsg('trade-error', 'Insufficient holdings. You have ' + state.positions[asset].qty.toFixed(6) + ' ' + (ASSET_LABELS[asset] || asset));
                 return;
             }
-
             const avgEntry = state.positions[asset].totalCost / state.positions[asset].qty;
             const costBasis = qty * avgEntry;
             state.positions[asset].qty -= qty;
             state.positions[asset].totalCost -= costBasis;
             state.cash += amountUsd;
-
             if (state.positions[asset].qty < 0.00000001) {
                 delete state.positions[asset];
             }
-
-            showMsg('trade-success', 'Sold ' + qty.toFixed(6) + ' ' + ASSET_LABELS[asset] + ' at ' + fmtUsd(price));
+            showMsg('trade-success', 'Sold ' + qty.toFixed(6) + ' ' + (ASSET_LABELS[asset] || asset) + ' at ' + fmtUsd(price));
         }
 
         state.history.unshift({
@@ -1186,7 +1314,6 @@
             total: amountUsd
         });
 
-        // Record portfolio snapshot for risk calc
         const totalValue = calcPortfolioValue();
         state.portfolioSnapshots.push({ ts: Date.now(), value: totalValue });
         if (state.portfolioSnapshots.length > 500) state.portfolioSnapshots = state.portfolioSnapshots.slice(-500);
@@ -1195,6 +1322,42 @@
         amountInput.value = '';
         updateUI();
     };
+
+    // ── Sync portfolio from server ─────────────────────────────
+    async function syncPortfolioFromServer() {
+        try {
+            const resp = await fetch(API_BASE + '/api/portfolio');
+            if (!resp.ok) throw new Error('Portfolio fetch failed');
+            const data = await resp.json();
+
+            state.cash = data.cash;
+            state.positions = {};
+            (data.holdings || []).forEach(h => {
+                state.positions[h.coin] = {
+                    qty: h.amount,
+                    totalCost: h.total_cost
+                };
+            });
+            state.history = (data.trade_history || []).map(t => ({
+                date: t.timestamp,
+                asset: t.coin,
+                type: t.side,
+                qty: t.amount,
+                price: t.price,
+                total: t.total_usd
+            }));
+            state.portfolioSnapshots = (data.portfolio_snapshots || []).map(s => ({
+                ts: new Date(s.timestamp).getTime(),
+                value: s.total_value
+            }));
+
+            saveState();
+            updateUI();
+        } catch(e) {
+            // Keep local state
+            updateUI();
+        }
+    }
 
     function calcPortfolioValue() {
         let posValue = 0;
@@ -1227,7 +1390,7 @@
             const pnlColor = pnl >= 0 ? 'text-green-400' : 'text-red-400';
 
             html += '<tr>' +
-                '<td class="px-3 py-2.5 font-sans font-semibold text-gray-200">' + ASSET_LABELS[asset] + '</td>' +
+                '<td class="px-3 py-2.5 font-sans font-semibold text-gray-200">' + (ASSET_LABELS[asset] || asset) + '</td>' +
                 '<td class="px-3 py-2.5 text-right text-gray-300">' + pos.qty.toFixed(6) + '</td>' +
                 '<td class="px-3 py-2.5 text-right text-gray-400">' + fmtUsd(avgEntry) + '</td>' +
                 '<td class="px-3 py-2.5 text-right text-gray-200">' + fmtUsd(current) + '</td>' +
@@ -1256,7 +1419,7 @@
             const typeColor = t.type === 'buy' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400';
             html += '<tr>' +
                 '<td class="px-3 py-2 text-gray-400 text-xs">' + dateStr + '</td>' +
-                '<td class="px-3 py-2 font-sans text-gray-200">' + ASSET_LABELS[t.asset] + '</td>' +
+                '<td class="px-3 py-2 font-sans text-gray-200">' + (ASSET_LABELS[t.asset] || t.asset) + '</td>' +
                 '<td class="px-3 py-2"><span class="' + typeColor + ' text-xs font-bold px-2 py-0.5 rounded uppercase">' + t.type + '</span></td>' +
                 '<td class="px-3 py-2 text-right text-gray-300">' + t.qty.toFixed(6) + '</td>' +
                 '<td class="px-3 py-2 text-right text-gray-400">' + fmtUsd(t.price) + '</td>' +
@@ -1291,7 +1454,6 @@
 
         document.getElementById('hero-trades').textContent = state.history.length;
 
-        // Win rate from closed trades
         const closedTrades = state.history.filter(t => t.type === 'sell');
         if (closedTrades.length > 0) {
             const wins = closedTrades.filter((t, i) => {
@@ -1316,7 +1478,6 @@
             return;
         }
 
-        // Returns
         const returns = [];
         for (let i = 1; i < snaps.length; i++) {
             returns.push((snaps[i].value - snaps[i-1].value) / snaps[i-1].value);
@@ -1327,7 +1488,6 @@
         const std = Math.sqrt(variance);
         const sharpe = std > 0 ? (mean / std * Math.sqrt(252)).toFixed(2) : '--';
 
-        // Max drawdown
         let peak = snaps[0].value;
         let maxDD = 0;
         snaps.forEach(s => {
@@ -1336,7 +1496,6 @@
             if (dd > maxDD) maxDD = dd;
         });
 
-        // Win rate from sell trades
         const sells = state.history.filter(t => t.type === 'sell');
         let wins = 0, losses = 0, totalProfit = 0, totalLoss = 0;
         sells.forEach(t => {
@@ -1377,14 +1536,49 @@
         updateUI();
     };
 
-    // ── Backtester ─────────────────────────────────────────────
-    window.runBacktest = function() {
+    // ── Backtester (server-side with local fallback) ───────────
+    window.runBacktest = async function() {
         const strategy = document.getElementById('backtest-strategy').value;
+        const asset = document.getElementById('backtest-asset').value;
         const capital = parseFloat(document.getElementById('backtest-capital').value) || 10000;
         const btn = document.getElementById('backtest-btn');
         btn.textContent = 'Running...';
         btn.disabled = true;
 
+        // Try server-side backtest
+        try {
+            const resp = await fetch(API_BASE + '/api/backtest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    strategy: strategy,
+                    coin_id: asset,
+                    days: 90,
+                    initial_capital: capital
+                })
+            });
+            const result = await resp.json();
+
+            if (!result.error && result.equity_curve) {
+                document.getElementById('backtest-results').classList.remove('hidden');
+                const retEl = document.getElementById('bt-return');
+                retEl.textContent = (result.total_return >= 0 ? '+' : '') + result.total_return.toFixed(1) + '%';
+                retEl.className = 'text-sm font-bold font-mono ' + (result.total_return >= 0 ? 'text-green-400' : 'text-red-400');
+                document.getElementById('bt-drawdown').textContent = '-' + result.max_drawdown.toFixed(1) + '%';
+                document.getElementById('bt-sharpe').textContent = result.sharpe_ratio.toFixed(2);
+                document.getElementById('bt-winrate').textContent = result.win_rate.toFixed(1) + '%';
+                document.getElementById('bt-label').textContent = strategy.replace(/_/g, ' ').toUpperCase() + ' on ' + (ASSET_LABELS[asset] || asset) + ' | ' + result.total_trades + ' trades';
+
+                drawBacktestChart(result.equity_curve, capital);
+                btn.textContent = 'Run Backtest';
+                btn.disabled = false;
+                return;
+            }
+        } catch(e) {
+            // Fallback to local simulation
+        }
+
+        // Local fallback
         setTimeout(() => {
             const days = 365;
             const equityCurve = [capital];
@@ -1395,18 +1589,18 @@
             let wins = 0;
             const dailyReturns = [];
 
-            // Strategy parameters (bias for different strategies)
             let winProb, avgWin, avgLoss;
             if (strategy === 'ma_crossover') {
                 winProb = 0.55; avgWin = 0.025; avgLoss = 0.018;
-            } else if (strategy === 'rsi_reversal') {
+            } else if (strategy === 'rsi') {
                 winProb = 0.62; avgWin = 0.018; avgLoss = 0.015;
+            } else if (strategy === 'bollinger_bands') {
+                winProb = 0.58; avgWin = 0.020; avgLoss = 0.016;
             } else {
                 winProb = 0.52; avgWin = 0.032; avgLoss = 0.022;
             }
 
             for (let d = 0; d < days; d++) {
-                // Some days no trade
                 if (Math.random() > 0.3) {
                     const isWin = Math.random() < winProb;
                     const pct = isWin ? avgWin * (0.5 + Math.random()) : -avgLoss * (0.5 + Math.random());
@@ -1432,7 +1626,6 @@
             const sharpe = stdR > 0 ? (meanR / stdR * Math.sqrt(252)).toFixed(2) : 'N/A';
             const winRate = trades > 0 ? (wins / trades * 100).toFixed(1) : 0;
 
-            // Update results
             document.getElementById('backtest-results').classList.remove('hidden');
             const retEl = document.getElementById('bt-return');
             retEl.textContent = (totalReturn >= 0 ? '+' : '') + totalReturn.toFixed(1) + '%';
@@ -1440,7 +1633,7 @@
             document.getElementById('bt-drawdown').textContent = '-' + (maxDD * 100).toFixed(1) + '%';
             document.getElementById('bt-sharpe').textContent = sharpe;
             document.getElementById('bt-winrate').textContent = winRate + '%';
-            document.getElementById('bt-label').textContent = strategy.replace(/_/g, ' ').toUpperCase() + ' | ' + trades + ' trades';
+            document.getElementById('bt-label').textContent = strategy.replace(/_/g, ' ').toUpperCase() + ' | ' + trades + ' trades (simulated)';
 
             drawBacktestChart(equityCurve, capital);
 
@@ -1468,7 +1661,6 @@
             '<stop offset="100%" stop-color="#10B981" stop-opacity="0.01"/>' +
             '</linearGradient></defs>';
 
-        // Grid
         for (let i = 0; i <= 4; i++) {
             const y = PAD_T + (i / 4) * chartH;
             html += '<line x1="' + PAD_L + '" y1="' + y + '" x2="' + (W - PAD_R) + '" y2="' + y + '" class="grid-line"/>';
@@ -1476,19 +1668,17 @@
             html += '<text x="' + (PAD_L - 6) + '" y="' + (y + 4) + '" text-anchor="end" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">$' + (val / 1000).toFixed(1) + 'k</text>';
         }
 
-        // Capital line
         const capY = yPos(capital);
         html += '<line x1="' + PAD_L + '" y1="' + capY + '" x2="' + (W - PAD_R) + '" y2="' + capY + '" stroke="#F59E0B" stroke-width="1" stroke-dasharray="4 4" opacity="0.3"/>';
         html += '<text x="' + (W - PAD_R) + '" y="' + (capY - 5) + '" text-anchor="end" fill="#F59E0B" font-size="9" opacity="0.5" font-family="Inter,sans-serif">Initial</text>';
 
-        // X labels
-        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        for (let m = 0; m < 12; m++) {
-            const idx = Math.round(m / 11 * (curve.length - 1));
-            html += '<text x="' + xPos(idx) + '" y="' + (H - 8) + '" text-anchor="middle" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">' + months[m] + '</text>';
+        const totalPoints = curve.length;
+        const numLabels = Math.min(12, totalPoints);
+        for (let m = 0; m < numLabels; m++) {
+            const idx = Math.round(m / (numLabels - 1) * (totalPoints - 1));
+            html += '<text x="' + xPos(idx) + '" y="' + (H - 8) + '" text-anchor="middle" fill="#6B7280" font-size="10" font-family="Inter,sans-serif">' + (m + 1) + '</text>';
         }
 
-        // Curve
         const step = Math.max(1, Math.floor(curve.length / 300));
         let points = '';
         let fillPoints = '';
@@ -1557,9 +1747,10 @@
     // ── Init ───────────────────────────────────────────────────
     fetchPrices();
     switchChart('bitcoin');
-    updateUI();
+    syncPortfolioFromServer();
+    connectWebSocket();
 
-    // Auto-refresh every 30 seconds
+    // Auto-refresh every 30 seconds (fallback if WS disconnects)
     setInterval(fetchPrices, 30000);
 })();
 </script>
