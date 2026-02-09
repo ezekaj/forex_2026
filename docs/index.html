@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Trading Bot - AI-Powered Multi-Asset Trading Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#111827',
+                        surface: '#0A0E1A',
+                        amber: {
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        },
+                        green: {
+                            400: '#34D399',
+                            500: '#10B981',
+                            600: '#059669',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #111827;
+            color: #f3f4f6;
+        }
+
+        .hero-gradient {
+            background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245, 158, 11, 0.12) 0%, transparent 60%),
+                        radial-gradient(ellipse 60% 40% at 80% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse 50% 30% at 20% 60%, rgba(245, 158, 11, 0.06) 0%, transparent 50%),
+                        #111827;
+        }
+
+        .glass-card {
+            background: rgba(10, 14, 26, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(245, 158, 11, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(245, 158, 11, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(245, 158, 11, 0.05);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24, #FDE68A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-green {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pipeline-line {
+            background: linear-gradient(180deg, #F59E0B, #10B981);
+        }
+
+        .badge {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .stat-card {
+            background: rgba(10, 14, 26, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.05);
+        }
+
+        .tech-badge {
+            background: rgba(10, 14, 26, 0.8);
+            border: 1px solid rgba(245, 158, 11, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .pipeline-step {
+            position: relative;
+        }
+
+        .pipeline-step::after {
+            content: '';
+            position: absolute;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 32px;
+            background: linear-gradient(180deg, rgba(245, 158, 11, 0.6), rgba(16, 185, 129, 0.6));
+        }
+
+        .pipeline-step:last-child::after {
+            display: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0A0E1A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(245, 158, 11, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(245, 158, 11, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur-xl border-b border-amber-500/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-dark" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </div>
+                <span class="text-lg font-bold gradient-text">Ultimate Trading Bot</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-gray-400 hover:text-amber-400 transition-colors text-sm">Features</a>
+                <a href="#architecture" class="text-gray-400 hover:text-amber-400 transition-colors text-sm">Architecture</a>
+                <a href="#tech-stack" class="text-gray-400 hover:text-amber-400 transition-colors text-sm">Tech Stack</a>
+                <a href="#performance" class="text-gray-400 hover:text-amber-400 transition-colors text-sm">Performance</a>
+                <a href="https://github.com/ezekaj/forex_2026" target="_blank" class="btn-primary px-4 py-2 rounded-lg text-dark font-semibold text-sm">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient min-h-screen flex items-center relative overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="flex justify-center gap-3 mb-8 flex-wrap fade-in">
+                    <span class="badge px-4 py-1.5 rounded-full text-amber-400 text-sm font-medium">3 Asset Classes</span>
+                    <span class="badge px-4 py-1.5 rounded-full text-amber-400 text-sm font-medium">Multi-Agent AI</span>
+                    <span class="badge px-4 py-1.5 rounded-full text-amber-400 text-sm font-medium">Real-Time Dashboard</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight fade-in">
+                    <span class="gradient-text">Ultimate</span><br>
+                    <span class="text-gray-100">Trading Bot</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-amber-400/90 font-medium mb-6 fade-in">
+                    AI-Powered Multi-Asset Trading Platform
+                </p>
+                <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed fade-in">
+                    An AI-powered trading platform for forex, stocks, and cryptocurrency markets. Uses multi-agent decision making with real-time dashboards, comprehensive backtesting, and Kelly Criterion risk management for optimal position sizing.
+                </p>
+                <div class="flex justify-center gap-4 flex-wrap fade-in">
+                    <a href="https://github.com/ezekaj/forex_2026" target="_blank" class="btn-primary px-8 py-3.5 rounded-xl text-dark font-bold text-lg inline-flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        View on GitHub
+                    </a>
+                    <a href="https://zedigital.tech" target="_blank" class="btn-secondary px-8 py-3.5 rounded-xl text-amber-400 font-bold text-lg inline-flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                        Portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-dark to-transparent"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Core Features</span>
+                </h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Advanced trading capabilities powered by artificial intelligence and quantitative analysis</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="glass-card rounded-2xl p-8 fade-in">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-5">
+                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-100 mb-3">Multi-Asset Support</h3>
+                    <p class="text-gray-400 leading-relaxed">Trade forex pairs, stocks, and cryptocurrencies from a single unified platform</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="glass-card rounded-2xl p-8 fade-in">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-5">
+                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-100 mb-3">Multi-Agent Decision Making</h3>
+                    <p class="text-gray-400 leading-relaxed">Specialized AI agents analyze different market aspects and reach consensus on trading signals</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="glass-card rounded-2xl p-8 fade-in">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-5">
+                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-100 mb-3">Real-Time Dashboards</h3>
+                    <p class="text-gray-400 leading-relaxed">Live market data visualization, portfolio performance tracking, and trade execution monitoring</p>
+                </div>
+                <!-- Feature 4 -->
+                <div class="glass-card rounded-2xl p-8 fade-in">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-5">
+                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-100 mb-3">Backtesting Engine</h3>
+                    <p class="text-gray-400 leading-relaxed">Test strategies against historical data with detailed performance reports and drawdown analysis</p>
+                </div>
+                <!-- Feature 5 -->
+                <div class="glass-card rounded-2xl p-8 fade-in">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-5">
+                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-100 mb-3">Kelly Criterion Risk Management</h3>
+                    <p class="text-gray-400 leading-relaxed">Mathematically optimal position sizing based on edge and variance for maximum long-term growth</p>
+                </div>
+                <!-- Feature 6 -->
+                <div class="glass-card rounded-2xl p-8 fade-in">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-5">
+                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-100 mb-3">MT5 Integration</h3>
+                    <p class="text-gray-400 leading-relaxed">Direct connection to MetaTrader 5 for professional-grade forex execution and market data</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-24 relative">
+        <div class="absolute inset-0">
+            <div class="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/10 to-transparent"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Trading Pipeline</span>
+                </h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">End-to-end architecture from market data ingestion to trade execution</p>
+            </div>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <!-- Step 1 -->
+                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-dark font-bold text-sm">1</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-amber-400 mb-1">Market Data</h3>
+                        <p class="text-gray-400">Real-time feeds from multiple exchanges and brokers</p>
+                    </div>
+                </div>
+                <!-- Arrow -->
+                <div class="flex justify-center">
+                    <svg class="w-6 h-6 text-amber-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                </div>
+                <!-- Step 2 -->
+                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-green-500 flex items-center justify-center text-dark font-bold text-sm">2</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-amber-400 mb-1">AI Analysis</h3>
+                        <p class="text-gray-400">Multi-agent system processes technical, fundamental, and sentiment signals</p>
+                    </div>
+                </div>
+                <!-- Arrow -->
+                <div class="flex justify-center">
+                    <svg class="w-6 h-6 text-amber-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                </div>
+                <!-- Step 3 -->
+                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-amber-500 flex items-center justify-center text-dark font-bold text-sm">3</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-green-400 mb-1">Signal Generation</h3>
+                        <p class="text-gray-400">Consensus algorithm produces trading signals with confidence scores</p>
+                    </div>
+                </div>
+                <!-- Arrow -->
+                <div class="flex justify-center">
+                    <svg class="w-6 h-6 text-green-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                </div>
+                <!-- Step 4 -->
+                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-dark font-bold text-sm">4</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-green-400 mb-1">Risk Assessment</h3>
+                        <p class="text-gray-400">Kelly Criterion calculates optimal position sizes</p>
+                    </div>
+                </div>
+                <!-- Arrow -->
+                <div class="flex justify-center">
+                    <svg class="w-6 h-6 text-green-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                </div>
+                <!-- Step 5 -->
+                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-dark font-bold text-sm">5</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-amber-400 mb-1">Trade Execution</h3>
+                        <p class="text-gray-400">Orders sent via MT5 or exchange APIs</p>
+                    </div>
+                </div>
+                <!-- Arrow -->
+                <div class="flex justify-center">
+                    <svg class="w-6 h-6 text-amber-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                </div>
+                <!-- Step 6 -->
+                <div class="glass-card rounded-2xl p-6 fade-in flex items-start gap-5">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-amber-500 flex items-center justify-center text-dark font-bold text-sm">6</div>
+                    <div>
+                        <h3 class="text-lg font-bold text-green-400 mb-1">Dashboard</h3>
+                        <p class="text-gray-400">Real-time P&L, positions, and performance metrics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech-stack" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Tech Stack</span>
+                </h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Built with modern technologies for performance, reliability, and scalability</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
+                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
+                    <div class="text-amber-400 font-bold text-sm mb-2">Backend</div>
+                    <div class="text-gray-300 text-xs leading-relaxed">Python<br>FastAPI</div>
+                </div>
+                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
+                    <div class="text-amber-400 font-bold text-sm mb-2">Frontend</div>
+                    <div class="text-gray-300 text-xs leading-relaxed">React<br>Real-time Charts</div>
+                </div>
+                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
+                    <div class="text-green-400 font-bold text-sm mb-2">Database</div>
+                    <div class="text-gray-300 text-xs leading-relaxed">PostgreSQL<br>Redis</div>
+                </div>
+                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
+                    <div class="text-green-400 font-bold text-sm mb-2">AI</div>
+                    <div class="text-gray-300 text-xs leading-relaxed">Gemini 3.0<br>Multi-Agent</div>
+                </div>
+                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
+                    <div class="text-amber-400 font-bold text-sm mb-2">Trading</div>
+                    <div class="text-gray-300 text-xs leading-relaxed">MT5 API<br>Exchange APIs</div>
+                </div>
+                <div class="tech-badge rounded-xl p-5 text-center fade-in hover:border-amber-500/30 transition-all">
+                    <div class="text-green-400 font-bold text-sm mb-2">Analysis</div>
+                    <div class="text-gray-300 text-xs leading-relaxed">Kelly Criterion<br>Backtesting</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Stats Section -->
+    <section id="performance" class="py-24 relative">
+        <div class="absolute inset-0">
+            <div class="absolute bottom-0 left-1/4 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"></div>
+            <div class="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Platform Highlights</span>
+                </h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">Key capabilities that set this trading platform apart</p>
+            </div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                <div class="stat-card rounded-2xl p-8 text-center fade-in">
+                    <div class="text-4xl md:text-5xl font-black gradient-text mb-2">3</div>
+                    <div class="text-gray-400 text-sm font-medium">Asset Classes</div>
+                </div>
+                <div class="stat-card rounded-2xl p-8 text-center fade-in">
+                    <div class="text-4xl md:text-5xl font-black gradient-text-green mb-2">Multi</div>
+                    <div class="text-gray-400 text-sm font-medium">Agent Architecture</div>
+                </div>
+                <div class="stat-card rounded-2xl p-8 text-center fade-in">
+                    <div class="text-4xl md:text-5xl font-black gradient-text mb-2">Real-Time</div>
+                    <div class="text-gray-400 text-sm font-medium">Data Processing</div>
+                </div>
+                <div class="stat-card rounded-2xl p-8 text-center fade-in">
+                    <div class="text-4xl md:text-5xl font-black gradient-text-green mb-2">Kelly</div>
+                    <div class="text-gray-400 text-sm font-medium">Risk Management</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="glass-card rounded-3xl p-12 md:p-16 text-center relative overflow-hidden fade-in">
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-green-500/5"></div>
+                <div class="relative z-10">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-100 mb-4">Explore the Codebase</h2>
+                    <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-8">Dive into the source code and see how AI-powered trading works under the hood</p>
+                    <div class="flex justify-center gap-4 flex-wrap">
+                        <a href="https://github.com/ezekaj/forex_2026" target="_blank" class="btn-primary px-8 py-3.5 rounded-xl text-dark font-bold text-lg inline-flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            View Repository
+                        </a>
+                        <a href="https://zedigital.tech" target="_blank" class="btn-secondary px-8 py-3.5 rounded-xl text-amber-400 font-bold text-lg inline-flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                            Visit Portfolio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-amber-500/10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-dark" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                    </div>
+                    <span class="text-gray-400 text-sm">Built by <span class="text-amber-400 font-semibold">ELO</span> from <a href="https://zedigital.tech" target="_blank" class="text-amber-400 hover:text-amber-300 font-semibold transition-colors">Z.E Digital Tech</a></span>
+                </div>
+                <div class="flex items-center gap-6">
+                    <a href="https://github.com/ezekaj/forex_2026" target="_blank" class="text-gray-500 hover:text-amber-400 transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    </a>
+                    <a href="https://zedigital.tech" target="_blank" class="text-gray-500 hover:text-amber-400 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Fade-in Animation Script -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 80);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
