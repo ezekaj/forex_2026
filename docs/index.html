@@ -787,7 +787,13 @@
                 </div>
                 <div id="iban-content" class="iban-content">
                     <div class="mt-4 bg-surface rounded-lg p-3 space-y-2">
-                        <p class="text-xs text-gray-400">Contact <span class="text-amber-400">elvizekaj@zedigital.tech</span> for IBAN details and bank transfer instructions.</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] text-gray-500 mb-1">IBAN</p>
+                                <p class="text-sm text-gray-200 font-mono">AL-C0100002334708</p>
+                            </div>
+                            <button onclick="navigator.clipboard.writeText('AL-C0100002334708');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)" class="text-xs text-amber-400 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-gray-700 hover:border-amber-400/50 flex-shrink-0">Copy</button>
+                        </div>
                     </div>
                 </div>
             </div>
