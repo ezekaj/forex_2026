@@ -4,9 +4,9 @@ import logging
 from contextlib import asynccontextmanager
 from typing import Optional
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 from database import init_db
 from market import fetch_prices, fetch_coin_detail, fetch_market_overview, fetch_history, SUPPORTED_COINS
@@ -48,18 +48,57 @@ app.add_middleware(
 )
 
 
+VALID_COINS = set(SUPPORTED_COINS.keys())
+VALID_STRATEGIES = {"ma_crossover", "rsi", "macd", "bollinger_bands"}
+
+
 class TradeRequest(BaseModel):
-    coin_id: str
-    side: str
-    amount_usd: float
+    coin_id: str = Field(..., description="Coin identifier")
+    side: str = Field(..., pattern="^(buy|sell)$", description="Trade side: buy or sell")
+    amount_usd: float = Field(..., gt=0, le=100000, description="Trade amount in USD (max $100,000)")
+
+    @field_validator("coin_id")
+    @classmethod
+    def validate_coin_id(cls, v: str) -> str:
+        if v not in VALID_COINS:
+            raise ValueError(f"Unsupported coin. Available: {sorted(VALID_COINS)}")
+        return v
 
 
 class BacktestRequest(BaseModel):
-    strategy: str
-    coin_id: str = "bitcoin"
-    days: int = 90
-    initial_capital: float = 10000.0
+    strategy: str = Field(..., description="Strategy identifier")
+    coin_id: str = Field(default="bitcoin", description="Coin identifier")
+    days: int = Field(default=90, ge=7, le=365, description="Backtest period in days")
+    initial_capital: float = Field(default=10000.0, gt=0, le=1000000, description="Initial capital in USD")
     params: Optional[dict] = None
+
+    @field_validator("strategy")
+    @classmethod
+    def validate_strategy(cls, v: str) -> str:
+        if v not in VALID_STRATEGIES:
+            raise ValueError(f"Unknown strategy. Available: {sorted(VALID_STRATEGIES)}")
+        return v
+
+    @field_validator("coin_id")
+    @classmethod
+    def validate_coin_id(cls, v: str) -> str:
+        if v not in VALID_COINS:
+            raise ValueError(f"Unsupported coin. Available: {sorted(VALID_COINS)}")
+        return v
+
+    @field_validator("params")
+    @classmethod
+    def validate_params(cls, v: Optional[dict]) -> Optional[dict]:
+        if v is None:
+            return v
+        for key, val in v.items():
+            if not isinstance(val, (int, float)):
+                raise ValueError(f"Strategy param '{key}' must be a number")
+            if val <= 0:
+                raise ValueError(f"Strategy param '{key}' must be positive")
+            if val > 10000:
+                raise ValueError(f"Strategy param '{key}' exceeds maximum value of 10000")
+        return v
 
 
 @app.get("/api/health")
@@ -75,9 +114,11 @@ async def get_prices():
 
 @app.get("/api/prices/{coin_id}")
 async def get_coin_price(coin_id: str):
+    if coin_id not in VALID_COINS:
+        raise HTTPException(status_code=400, detail=f"Unsupported coin. Available: {sorted(VALID_COINS)}")
     detail = await fetch_coin_detail(coin_id)
     if not detail:
-        return {"error": f"Coin '{coin_id}' not supported. Supported: {list(SUPPORTED_COINS.keys())}"}
+        raise HTTPException(status_code=404, detail=f"Price data not available for '{coin_id}'")
     return detail
 
 
@@ -91,7 +132,7 @@ async def get_market():
 async def post_trade(req: TradeRequest):
     result = await execute_trade(req.coin_id, req.side, req.amount_usd)
     if not result["success"]:
-        return {"error": result["error"]}, 400
+        raise HTTPException(status_code=400, detail=result["error"])
     return result
 
 
@@ -108,16 +149,9 @@ async def list_strategies():
 
 @app.post("/api/backtest")
 async def run_backtest(req: BacktestRequest):
-    if req.strategy not in STRATEGIES:
-        return {"error": f"Unknown strategy. Available: {list(STRATEGIES.keys())}"}
-
-    if req.coin_id not in SUPPORTED_COINS:
-        return {"error": f"Unsupported coin. Available: {list(SUPPORTED_COINS.keys())}"}
-
-    days = max(7, min(365, req.days))
-    history = await fetch_history(req.coin_id, days=days)
+    history = await fetch_history(req.coin_id, days=req.days)
     if not history or len(history) < 60:
-        return {"error": "Insufficient historical data for backtesting"}
+        raise HTTPException(status_code=400, detail="Insufficient historical data for backtesting")
 
     result = backtest(
         strategy_id=req.strategy,
@@ -133,12 +167,12 @@ async def get_signals(
     coin_id: str = Query(default="bitcoin"),
     days: int = Query(default=30, ge=7, le=365),
 ):
-    if coin_id not in SUPPORTED_COINS:
-        return {"error": f"Unsupported coin. Available: {list(SUPPORTED_COINS.keys())}"}
+    if coin_id not in VALID_COINS:
+        raise HTTPException(status_code=400, detail=f"Unsupported coin. Available: {sorted(VALID_COINS)}")
 
     history = await fetch_history(coin_id, days=days)
     if not history or len(history) < 20:
-        return {"error": "Insufficient data for signal generation"}
+        raise HTTPException(status_code=400, detail="Insufficient data for signal generation")
 
     signals = {}
     for strategy_id in STRATEGIES:
