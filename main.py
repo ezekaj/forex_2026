@@ -4,9 +4,13 @@ import logging
 from contextlib import asynccontextmanager
 from typing import Optional
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query, HTTPException
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from database import init_db
 from market import fetch_prices, fetch_coin_detail, fetch_market_overview, fetch_history, SUPPORTED_COINS
@@ -32,12 +36,17 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down.")
 
 
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI(
     title="ZeDigital Trading Bot API",
     description="Paper trading backend with real CoinGecko market data, strategy signals, and backtesting.",
     version="1.0.0",
     lifespan=lifespan,
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -107,13 +116,15 @@ async def health():
 
 
 @app.get("/api/prices")
-async def get_prices():
+@limiter.limit("60/minute")
+async def get_prices(request: Request):
     prices = await fetch_prices()
     return {"prices": prices, "count": len(prices)}
 
 
 @app.get("/api/prices/{coin_id}")
-async def get_coin_price(coin_id: str):
+@limiter.limit("60/minute")
+async def get_coin_price(request: Request, coin_id: str):
     if coin_id not in VALID_COINS:
         raise HTTPException(status_code=400, detail=f"Unsupported coin. Available: {sorted(VALID_COINS)}")
     detail = await fetch_coin_detail(coin_id)
@@ -123,13 +134,15 @@ async def get_coin_price(coin_id: str):
 
 
 @app.get("/api/market")
-async def get_market():
+@limiter.limit("60/minute")
+async def get_market(request: Request):
     overview = await fetch_market_overview()
     return overview
 
 
 @app.post("/api/trade")
-async def post_trade(req: TradeRequest):
+@limiter.limit("10/minute")
+async def post_trade(request: Request, req: TradeRequest):
     result = await execute_trade(req.coin_id, req.side, req.amount_usd)
     if not result["success"]:
         raise HTTPException(status_code=400, detail=result["error"])
@@ -148,7 +161,8 @@ async def list_strategies():
 
 
 @app.post("/api/backtest")
-async def run_backtest(req: BacktestRequest):
+@limiter.limit("5/minute")
+async def run_backtest(request: Request, req: BacktestRequest):
     history = await fetch_history(req.coin_id, days=req.days)
     if not history or len(history) < 60:
         raise HTTPException(status_code=400, detail="Insufficient historical data for backtesting")
@@ -163,7 +177,9 @@ async def run_backtest(req: BacktestRequest):
 
 
 @app.get("/api/signals")
+@limiter.limit("60/minute")
 async def get_signals(
+    request: Request,
     coin_id: str = Query(default="bitcoin"),
     days: int = Query(default=30, ge=7, le=365),
 ):
