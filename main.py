@@ -219,9 +219,17 @@ async def get_signals(
 
 connected_clients: set = set()
 
+ALLOWED_WS_ORIGINS = {"https://ezekaj.github.io", "http://localhost:3000"}
+
 
 @app.websocket("/ws/prices")
 async def websocket_prices(websocket: WebSocket):
+    origin = websocket.headers.get("origin", "")
+    if origin and origin not in ALLOWED_WS_ORIGINS:
+        logger.warning(f"WebSocket connection rejected from origin: {origin}")
+        await websocket.close(code=1008, reason="Origin not allowed")
+        return
+
     await websocket.accept()
     connected_clients.add(websocket)
     logger.info(f"WebSocket client connected. Total: {len(connected_clients)}")
