@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - Ultimate Trading Bot</title>
+    <meta name="description" content="Explore all features of the Ultimate Trading Bot: real-time market data, 4+ strategies, backtesting, paper trading, portfolio management, WebSocket streaming, and more.">
+    <meta property="og:title" content="Features - Ultimate Trading Bot">
+    <meta property="og:description" content="Real-time signals, backtesting engine, multi-strategy support, portfolio management, and MT5 integration.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://ezekaj.github.io/forex_2026/features.html">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { navy: '#111827', surface: '#0D1117', card: '#151C28', 'card-alt': '#1A2233' }, fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'SFMono-Regular', 'monospace'] } } }
+        }
+    </script>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo"><svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg><span>Ultimate Trading Bot</span></a>
+        <ul class="nav-links">
+            <li><a href="features.html" class="active">Features</a></li>
+            <li><a href="demo.html">Demo</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li>
+        </ul>
+        <a href="pricing.html" class="nav-cta btn-cta btn-cta-sm">Start Trading</a>
+        <button id="hamburger-btn" class="hamburger" aria-label="Menu"><span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+    </div>
+</nav>
+<div id="mobile-menu" class="mobile-menu"><div class="mobile-menu-inner"><a href="features.html">Features</a><a href="demo.html">Demo</a><a href="pricing.html">Pricing</a><a href="faq.html">FAQ</a><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a><a href="pricing.html" class="btn-cta btn-cta-sm text-center mt-2">Start Trading</a></div></div>
+
+<!-- Ticker -->
+<div class="ticker-wrap" style="margin-top:56px"><div class="ticker-track"><span class="ticker-item" style="color:#9CA3AF">Loading live prices...</span></div></div>
+
+<!-- Hero -->
+<section class="section-dark py-20">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4 fade-in">Everything You Need to Trade Smarter</h1>
+        <p class="text-lg text-gray-400 fade-in">Real-time data, proven strategies, and professional-grade tools -- all in one platform.</p>
+    </div>
+</section>
+
+<!-- Feature Grid -->
+<section class="section-darker py-20">
+    <div class="max-w-[1400px] mx-auto px-6">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-amber-500/10"><svg class="text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">Real-time Market Data</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Live price feeds from CoinGecko API with WebSocket streaming. Sub-second price updates across all supported assets with 24h change, volume, and market cap.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-green-500/10"><svg class="text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">4+ Trading Strategies</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Choose from MA Crossover (20/50), RSI Reversal (30/70), MACD Signal, and Bollinger Bands. Professional plan users can create custom strategies.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-blue-500/10"><svg class="text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">Backtesting Engine</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Test any strategy against 7 to 365 days of historical data. View equity curves, Sharpe ratio, max drawdown, win rate, profit factor, and trade-by-trade breakdown.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-purple-500/10"><svg class="text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">Paper Trading</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Risk-free simulated trading with real market data. Start with $10,000 virtual capital. Track positions, P&L, and trade history exactly like live trading.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-red-500/10"><svg class="text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">Portfolio Management</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Real-time portfolio tracking with open positions, average entry prices, current values, and P&L. Full trade history with sortable, filterable records.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-cyan-500/10"><svg class="text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">WebSocket Streaming</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Real-time price updates via WebSocket connection. No polling, no delays. Instant price changes reflected in your dashboard and trading signals.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-orange-500/10"><svg class="text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">Multi-Asset Support</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Trade Bitcoin (BTC), Ethereum (ETH), Solana (SOL), BNB, Cardano (ADA), Polkadot (DOT), Avalanche (AVAX), and Polygon (MATIC). More assets on Professional plan.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-yellow-500/10"><svg class="text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">Risk Management</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Kelly Criterion position sizing, dynamic stop-loss, portfolio-level drawdown limits, and correlation-aware exposure caps. Protect your capital automatically.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-pink-500/10"><svg class="text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">Trade History</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Complete audit trail of every trade. Date, asset, type, amount, price, total, and P&L. Export to CSV for your records and tax reporting.</p>
+            </div>
+
+            <div class="feature-card fade-in">
+                <div class="icon-wrap bg-indigo-500/10"><svg class="text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg></div>
+                <h3 class="text-lg font-bold text-white mb-2">API Access</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">REST and WebSocket APIs for Professional plan users. Integrate with your own tools, build custom dashboards, or connect to third-party services.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Technical Specs -->
+<section class="section-dark py-20">
+    <div class="max-w-4xl mx-auto px-6">
+        <div class="section-header fade-in">
+            <h2>Technical Specifications</h2>
+            <p>Built with performance and reliability in mind</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-6 fade-in">
+            <div class="panel p-6 rounded-xl">
+                <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-4">Infrastructure</h3>
+                <ul class="space-y-3 text-sm text-gray-400">
+                    <li class="flex justify-between"><span>Backend</span><span class="text-gray-200 font-mono">Fly.io (Global Edge)</span></li>
+                    <li class="flex justify-between"><span>Data Source</span><span class="text-gray-200 font-mono">CoinGecko API</span></li>
+                    <li class="flex justify-between"><span>Real-time</span><span class="text-gray-200 font-mono">WebSocket</span></li>
+                    <li class="flex justify-between"><span>Uptime</span><span class="text-gray-200 font-mono">99.9% SLA</span></li>
+                    <li class="flex justify-between"><span>Latency</span><span class="text-gray-200 font-mono">&lt;100ms</span></li>
+                </ul>
+            </div>
+            <div class="panel p-6 rounded-xl">
+                <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-4">Trading Engine</h3>
+                <ul class="space-y-3 text-sm text-gray-400">
+                    <li class="flex justify-between"><span>Execution</span><span class="text-gray-200 font-mono">MetaTrader 5</span></li>
+                    <li class="flex justify-between"><span>Strategies</span><span class="text-gray-200 font-mono">4+ built-in</span></li>
+                    <li class="flex justify-between"><span>Backtest Range</span><span class="text-gray-200 font-mono">7-365 days</span></li>
+                    <li class="flex justify-between"><span>Assets</span><span class="text-gray-200 font-mono">8+ crypto</span></li>
+                    <li class="flex justify-between"><span>Sizing</span><span class="text-gray-200 font-mono">Kelly Criterion</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Strategy Comparison -->
+<section class="section-darker py-20">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="section-header fade-in">
+            <h2>Strategy Comparison</h2>
+            <p>Each strategy has different characteristics suited to different market conditions</p>
+        </div>
+
+        <div class="overflow-x-auto fade-in">
+            <table class="feature-matrix">
+                <thead>
+                    <tr>
+                        <th class="text-left">Strategy</th>
+                        <th>Type</th>
+                        <th>Best Market</th>
+                        <th>Signal Speed</th>
+                        <th>Risk Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="font-semibold text-amber-400">MA Crossover (20/50)</td><td>Trend Following</td><td>Trending</td><td>Medium</td><td>Medium</td></tr>
+                    <tr><td class="font-semibold text-amber-400">RSI Reversal (30/70)</td><td>Mean Reversion</td><td>Range-bound</td><td>Fast</td><td>Medium-High</td></tr>
+                    <tr><td class="font-semibold text-amber-400">MACD Signal</td><td>Momentum</td><td>Trending</td><td>Medium</td><td>Medium</td></tr>
+                    <tr><td class="font-semibold text-amber-400">Bollinger Bands</td><td>Volatility</td><td>Any</td><td>Fast</td><td>Low-Medium</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- Architecture Diagram -->
+<section class="section-dark py-20">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="section-header fade-in">
+            <h2>System Architecture</h2>
+            <p>End-to-end pipeline from market data to trade execution</p>
+        </div>
+
+        <div class="arch-flow fade-in">
+            <div class="arch-node">
+                <h4>Data Source</h4>
+                <p>CoinGecko API<br>WebSocket Feed</p>
+            </div>
+            <span class="arch-arrow">&rarr;</span>
+            <div class="arch-node">
+                <h4>Strategy Engine</h4>
+                <p>MA, RSI, MACD<br>Bollinger Bands</p>
+            </div>
+            <span class="arch-arrow">&rarr;</span>
+            <div class="arch-node">
+                <h4>Signal Generator</h4>
+                <p>BUY/SELL Signals<br>Confidence Scores</p>
+            </div>
+            <span class="arch-arrow">&rarr;</span>
+            <div class="arch-node">
+                <h4>Risk Manager</h4>
+                <p>Kelly Criterion<br>Position Sizing</p>
+            </div>
+            <span class="arch-arrow">&rarr;</span>
+            <div class="arch-node">
+                <h4>Trade Executor</h4>
+                <p>MT5 Integration<br>Order Routing</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section-darker py-16">
+    <div class="max-w-xl mx-auto px-6 text-center fade-in">
+        <h2 class="text-2xl font-bold text-white mb-4">Ready to get started?</h2>
+        <p class="text-gray-400 mb-6">Try every feature with paper trading. Upgrade for live markets.</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="pricing.html" class="btn-cta">See Pricing</a>
+            <a href="demo.html" class="btn-secondary">Watch Demo</a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-brand"><a href="index.html" class="nav-logo"><svg viewBox="0 0 28 28" fill="none" style="width:28px;height:28px;color:#F59E0B"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg><span style="font-size:0.9rem;font-weight:700;color:#F59E0B">Ultimate Trading Bot</span></a><p>AI-powered multi-asset crypto trading platform by ZeDigital.</p></div>
+            <div class="footer-links"><h4>Product</h4><ul><li><a href="features.html">Features</a></li><li><a href="demo.html">Demo</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+            <div class="footer-links"><h4>Legal</h4><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-links"><h4>Connect</h4><ul><li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li><li><a href="https://zedigital.tech" target="_blank">ZeDigital</a></li><li><a href="mailto:elvizekaj@zedigital.tech">Contact</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ZeDigital. All rights reserved.</p>
+            <p>Past performance is not indicative of future results. Trading involves risk of loss.</p>
+            <div class="footer-social"><a href="https://github.com/ezekaj/forex_2026" target="_blank" aria-label="GitHub"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

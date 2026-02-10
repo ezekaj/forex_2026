@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Demo - Ultimate Trading Bot</title>
+    <meta name="description" content="Watch the Ultimate Trading Bot in action. See how AI-powered signals analyze markets, detect opportunities, and execute trades automatically.">
+    <meta property="og:title" content="Live Demo - Ultimate Trading Bot">
+    <meta property="og:description" content="Interactive demo of AI-powered crypto trading. Watch market analysis, signal generation, and trade execution.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://ezekaj.github.io/forex_2026/demo.html">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { navy: '#111827', surface: '#0D1117', card: '#151C28', 'card-alt': '#1A2233' }, fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'SFMono-Regular', 'monospace'] } } }
+        }
+    </script>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo"><svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg><span>Ultimate Trading Bot</span></a>
+        <ul class="nav-links">
+            <li><a href="features.html">Features</a></li>
+            <li><a href="demo.html" class="active">Demo</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li>
+        </ul>
+        <a href="pricing.html" class="nav-cta btn-cta btn-cta-sm">Start Trading</a>
+        <button id="hamburger-btn" class="hamburger" aria-label="Menu"><span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+    </div>
+</nav>
+<div id="mobile-menu" class="mobile-menu"><div class="mobile-menu-inner"><a href="features.html">Features</a><a href="demo.html">Demo</a><a href="pricing.html">Pricing</a><a href="faq.html">FAQ</a><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a><a href="pricing.html" class="btn-cta btn-cta-sm text-center mt-2">Start Trading</a></div></div>
+
+<!-- Ticker -->
+<div class="ticker-wrap" style="margin-top:56px"><div class="ticker-track"><span class="ticker-item" style="color:#9CA3AF">Loading live prices...</span></div></div>
+
+<!-- Demo Hero -->
+<section class="section-dark py-16">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4 fade-in">See It in Action</h1>
+        <p class="text-lg text-gray-400 mb-6 fade-in">Watch the full trading cycle: from market data to profit. Auto-plays and loops.</p>
+
+        <!-- Controls -->
+        <div class="flex justify-center gap-3 mb-8 fade-in">
+            <button id="demo-play-pause" class="demo-replay-btn">Pause</button>
+            <button id="demo-replay-btn" class="demo-replay-btn">Replay</button>
+        </div>
+
+        <!-- Progress -->
+        <div class="demo-progress fade-in">
+            <div id="demo-progress-bar" class="demo-progress-bar"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Demo Timeline -->
+<section class="section-darker py-12">
+    <div class="max-w-3xl mx-auto px-6" id="demo-container">
+        <div class="demo-timeline">
+
+            <!-- Step 1: Market Data Streams In -->
+            <div class="demo-timeline-step" data-step="1">
+                <div class="demo-screen">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Market Data Stream</h3>
+                    <p class="text-xs text-gray-500 mb-4">Real-time prices flowing from CoinGecko API</p>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="bg-surface rounded-lg p-2 text-center">
+                            <p class="text-[10px] text-gray-500">BTC</p>
+                            <p id="demo-price-stream" class="text-sm font-bold font-mono text-green-400">$97,842</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-2 text-center">
+                            <p class="text-[10px] text-gray-500">ETH</p>
+                            <p class="text-sm font-bold font-mono text-red-400">$3,456</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-2 text-center">
+                            <p class="text-[10px] text-gray-500">SOL</p>
+                            <p class="text-sm font-bold font-mono text-green-400">$198</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-2 text-center">
+                            <p class="text-[10px] text-gray-500">BNB</p>
+                            <p class="text-sm font-bold font-mono text-green-400">$612</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Strategy Selector -->
+            <div class="demo-timeline-step" data-step="2">
+                <div class="demo-screen">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Strategy Selection</h3>
+                    <p class="text-xs text-gray-500 mb-4">User selects MA Crossover strategy for BTC</p>
+                    <div class="space-y-2">
+                        <div class="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-bold text-amber-400">MA Crossover (20/50)</p>
+                                <p class="text-xs text-gray-500">Moving average crossover strategy</p>
+                            </div>
+                            <span class="text-xs text-amber-400 font-bold">SELECTED</span>
+                        </div>
+                        <div class="bg-surface rounded-lg p-3 flex items-center justify-between opacity-50">
+                            <div><p class="text-sm text-gray-400">RSI Reversal (30/70)</p></div>
+                        </div>
+                        <div class="bg-surface rounded-lg p-3 flex items-center justify-between opacity-50">
+                            <div><p class="text-sm text-gray-400">MACD Signal</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Chart Builds with Candlesticks -->
+            <div class="demo-timeline-step" data-step="3">
+                <div class="demo-screen">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Chart Analysis</h3>
+                    <p class="text-xs text-gray-500 mb-4">Candlestick chart builds with historical data</p>
+                    <div id="demo-candles" style="display:flex;align-items:flex-end;gap:4px;height:120px;justify-content:center;padding:0 1rem">
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:8px;background:#10B981"></div><div style="width:10px;height:30px;background:#10B981;border-radius:1px"></div><div style="width:1px;height:5px;background:#10B981"></div></div>
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:12px;background:#EF4444"></div><div style="width:10px;height:20px;background:#EF4444;border-radius:1px"></div><div style="width:1px;height:8px;background:#EF4444"></div></div>
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:6px;background:#EF4444"></div><div style="width:10px;height:25px;background:#EF4444;border-radius:1px"></div><div style="width:1px;height:10px;background:#EF4444"></div></div>
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:10px;background:#10B981"></div><div style="width:10px;height:35px;background:#10B981;border-radius:1px"></div><div style="width:1px;height:4px;background:#10B981"></div></div>
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:5px;background:#10B981"></div><div style="width:10px;height:40px;background:#10B981;border-radius:1px"></div><div style="width:1px;height:7px;background:#10B981"></div></div>
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:15px;background:#EF4444"></div><div style="width:10px;height:22px;background:#EF4444;border-radius:1px"></div><div style="width:1px;height:6px;background:#EF4444"></div></div>
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:3px;background:#10B981"></div><div style="width:10px;height:45px;background:#10B981;border-radius:1px"></div><div style="width:1px;height:8px;background:#10B981"></div></div>
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:7px;background:#10B981"></div><div style="width:10px;height:50px;background:#10B981;border-radius:1px"></div><div style="width:1px;height:3px;background:#10B981"></div></div>
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:12px;background:#EF4444"></div><div style="width:10px;height:28px;background:#EF4444;border-radius:1px"></div><div style="width:1px;height:9px;background:#EF4444"></div></div>
+                        <div class="candle" style="display:flex;flex-direction:column;align-items:center;gap:0"><div style="width:1px;height:4px;background:#10B981"></div><div style="width:10px;height:55px;background:#10B981;border-radius:1px"></div><div style="width:1px;height:6px;background:#10B981"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Moving Averages Overlay -->
+            <div class="demo-timeline-step" data-step="4">
+                <div class="demo-screen">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Indicator Overlay</h3>
+                    <p class="text-xs text-gray-500 mb-4">MA(20) and MA(50) lines calculated and drawn</p>
+                    <svg viewBox="0 0 400 120" class="w-full h-auto">
+                        <line x1="0" y1="30" x2="400" y2="30" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4 4"/>
+                        <line x1="0" y1="60" x2="400" y2="60" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4 4"/>
+                        <line x1="0" y1="90" x2="400" y2="90" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4 4"/>
+                        <!-- MA(20) - faster -->
+                        <polyline points="20,85 60,80 100,70 140,55 180,50 220,40 260,35 300,45 340,30 380,25" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" class="line-draw"/>
+                        <!-- MA(50) - slower -->
+                        <polyline points="20,90 60,88 100,82 140,75 180,68 220,60 260,55 300,50 340,48 380,42" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" class="line-draw" style="animation-delay:0.5s"/>
+                        <!-- Crossover point -->
+                        <circle cx="140" cy="55" r="6" fill="none" stroke="#10B981" stroke-width="2" opacity="0.8"/>
+                        <text x="155" y="52" fill="#10B981" font-size="10" font-family="Inter,sans-serif">Crossover</text>
+                    </svg>
+                    <div class="flex items-center gap-4 mt-3 justify-center">
+                        <div class="flex items-center gap-1.5"><span style="width:12px;height:2px;background:#F59E0B;display:inline-block;border-radius:1px"></span><span class="text-[10px] text-gray-500">MA(20)</span></div>
+                        <div class="flex items-center gap-1.5"><span style="width:12px;height:2px;background:#3B82F6;display:inline-block;border-radius:1px"></span><span class="text-[10px] text-gray-500">MA(50)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: BUY Signal -->
+            <div class="demo-timeline-step" data-step="5">
+                <div class="demo-screen">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Signal Generated</h3>
+                    <p class="text-xs text-gray-500 mb-4">MA(20) crosses above MA(50) - bullish signal detected</p>
+                    <div class="flex items-center justify-center gap-4">
+                        <div id="demo-buy-signal" class="signal-buy text-lg">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                            BUY BTC @ $97,842
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-surface rounded-lg p-3 text-center">
+                        <p class="text-[10px] text-gray-500">Confidence: <span class="text-green-400 font-bold">87%</span> | Strategy: <span class="text-amber-400">MA Crossover</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6: Trade Executes -->
+            <div class="demo-timeline-step" data-step="6">
+                <div class="demo-screen">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Trade Executed</h3>
+                    <p class="text-xs text-gray-500 mb-4">Order filled, portfolio updated</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-surface rounded-lg p-3">
+                            <p class="text-[10px] text-gray-500 mb-1">Position</p>
+                            <p class="text-sm font-bold text-green-400 font-mono">0.0512 BTC</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-3">
+                            <p class="text-[10px] text-gray-500 mb-1">Entry Price</p>
+                            <p class="text-sm font-bold text-gray-200 font-mono">$97,842.00</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-3">
+                            <p class="text-[10px] text-gray-500 mb-1">Investment</p>
+                            <p class="text-sm font-bold text-gray-200 font-mono">$5,009.51</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-3">
+                            <p class="text-[10px] text-gray-500 mb-1">Cash Remaining</p>
+                            <p class="text-sm font-bold text-gray-200 font-mono">$4,990.49</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7: Price Rises -->
+            <div class="demo-timeline-step" data-step="7">
+                <div class="demo-screen">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Price Movement</h3>
+                    <p class="text-xs text-gray-500 mb-4">BTC rises from $97,842 to $98,190 -- position in profit</p>
+                    <div class="text-center">
+                        <p class="text-3xl font-black font-mono text-green-400" id="demo-profit">+$0.00</p>
+                        <p class="text-xs text-gray-500 mt-2">Unrealized P&L</p>
+                        <div class="mt-4 bg-green-500/10 border border-green-500/20 rounded-lg p-3 inline-flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                            <span class="text-sm text-green-400 font-bold">+0.36%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 8: SELL Signal -->
+            <div class="demo-timeline-step" data-step="8">
+                <div class="demo-screen">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Exit Signal</h3>
+                    <p class="text-xs text-gray-500 mb-4">MA(20) crosses below MA(50) - sell signal triggered</p>
+                    <div class="flex items-center justify-center gap-4">
+                        <div id="demo-sell-signal" class="signal-sell text-lg">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                            SELL BTC @ $98,190
+                        </div>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-3">
+                        <div class="bg-surface rounded-lg p-3 text-center">
+                            <p class="text-[10px] text-gray-500 mb-1">Trade P&L</p>
+                            <p class="text-sm font-bold text-green-400 font-mono">+$17.82</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-3 text-center">
+                            <p class="text-[10px] text-gray-500 mb-1">Return</p>
+                            <p class="text-sm font-bold text-green-400 font-mono">+0.36%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 9: Performance Dashboard -->
+            <div class="demo-timeline-step" data-step="9">
+                <div class="demo-screen" id="demo-dashboard">
+                    <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3">Performance Dashboard</h3>
+                    <p class="text-xs text-gray-500 mb-4">Session results after completing the trade cycle</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-surface rounded-lg p-3 text-center">
+                            <p class="text-[10px] text-gray-500 mb-1">Win Rate</p>
+                            <p class="metric-value text-lg font-bold text-green-400 font-mono">--</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-3 text-center">
+                            <p class="text-[10px] text-gray-500 mb-1">Sharpe Ratio</p>
+                            <p class="metric-value text-lg font-bold text-amber-400 font-mono">--</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-3 text-center">
+                            <p class="text-[10px] text-gray-500 mb-1">Total Return</p>
+                            <p class="metric-value text-lg font-bold text-green-400 font-mono">--</p>
+                        </div>
+                        <div class="bg-surface rounded-lg p-3 text-center">
+                            <p class="text-[10px] text-gray-500 mb-1">Profit Factor</p>
+                            <p class="metric-value text-lg font-bold text-gray-200 font-mono">--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section-dark py-16">
+    <div class="max-w-xl mx-auto px-6 text-center fade-in">
+        <h2 class="text-2xl font-bold text-white mb-4">Ready to try it yourself?</h2>
+        <p class="text-gray-400 mb-6">Start paper trading with real market data. No credit card required.</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="pricing.html" class="btn-cta">Start Free</a>
+            <a href="features.html" class="btn-secondary">Explore Features</a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-brand"><a href="index.html" class="nav-logo"><svg viewBox="0 0 28 28" fill="none" style="width:28px;height:28px;color:#F59E0B"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg><span style="font-size:0.9rem;font-weight:700;color:#F59E0B">Ultimate Trading Bot</span></a><p>AI-powered multi-asset crypto trading platform by ZeDigital.</p></div>
+            <div class="footer-links"><h4>Product</h4><ul><li><a href="features.html">Features</a></li><li><a href="demo.html">Demo</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+            <div class="footer-links"><h4>Legal</h4><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-links"><h4>Connect</h4><ul><li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li><li><a href="https://zedigital.tech" target="_blank">ZeDigital</a></li><li><a href="mailto:elvizekaj@zedigital.tech">Contact</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ZeDigital. All rights reserved.</p>
+            <p>Past performance is not indicative of future results. Trading involves risk of loss.</p>
+            <div class="footer-social"><a href="https://github.com/ezekaj/forex_2026" target="_blank" aria-label="GitHub"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

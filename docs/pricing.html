@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Ultimate Trading Bot</title>
+    <meta name="description" content="Start free with paper trading. Upgrade to Trader ($49/mo) or Professional ($149/mo) for live trading, automated strategies, and API access.">
+    <meta property="og:title" content="Pricing - Ultimate Trading Bot">
+    <meta property="og:description" content="Transparent pricing for AI-powered crypto trading. Free paper trading, $49/mo Trader, $149/mo Professional.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://ezekaj.github.io/forex_2026/pricing.html">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { navy: '#111827', surface: '#0D1117', card: '#151C28', 'card-alt': '#1A2233' }, fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'SFMono-Regular', 'monospace'] } } }
+        }
+    </script>
+    <style>
+        .iban-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .iban-content.open { max-height: 200px; }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg>
+            <span>Ultimate Trading Bot</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="features.html">Features</a></li>
+            <li><a href="demo.html">Demo</a></li>
+            <li><a href="pricing.html" class="active">Pricing</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li>
+        </ul>
+        <a href="#payment" class="nav-cta btn-cta btn-cta-sm">Start Trading</a>
+        <button id="hamburger-btn" class="hamburger" aria-label="Menu">
+            <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+        </button>
+    </div>
+</nav>
+<div id="mobile-menu" class="mobile-menu">
+    <div class="mobile-menu-inner">
+        <a href="features.html">Features</a><a href="demo.html">Demo</a><a href="pricing.html">Pricing</a><a href="faq.html">FAQ</a>
+        <a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a>
+        <a href="#payment" class="btn-cta btn-cta-sm text-center mt-2">Start Trading</a>
+    </div>
+</div>
+
+<!-- Ticker -->
+<div class="ticker-wrap" style="margin-top:56px"><div class="ticker-track"><span class="ticker-item" style="color:#9CA3AF">Loading live prices...</span></div></div>
+
+<!-- Hero -->
+<section class="section-dark py-20">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4 fade-in">Simple, Transparent Pricing</h1>
+        <p class="text-lg text-gray-400 mb-8 fade-in">Start free with paper trading. Upgrade when you are ready for live markets.</p>
+
+        <!-- Monthly/Annual Toggle -->
+        <div class="flex justify-center mb-12 fade-in">
+            <div class="pricing-toggle">
+                <button class="pricing-toggle-btn active" data-period="monthly">Monthly</button>
+                <button class="pricing-toggle-btn" data-period="annual">Annual <span class="text-xs ml-1 text-green-400">(Save 20%)</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Paper Trading -->
+            <div class="pricing-card fade-in" style="border-top:3px solid #10B981">
+                <h3 class="text-xl font-bold text-green-400 mb-1">Paper Trading</h3>
+                <p class="text-sm text-gray-500 mb-4">Learn without risk</p>
+                <div class="flex items-baseline gap-1 mb-6">
+                    <span class="price-value">Free</span>
+                    <span class="price-period">forever</span>
+                </div>
+                <ul class="space-y-3 mb-8">
+                    <li class="feature-check"><svg class="text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Simulated trading environment</li>
+                    <li class="feature-check"><svg class="text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Live market data (CoinGecko)</li>
+                    <li class="feature-check"><svg class="text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Basic backtester</li>
+                    <li class="feature-check"><svg class="text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>2 strategies (MA Crossover, RSI)</li>
+                    <li class="feature-check"><svg class="text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Community support</li>
+                    <li class="feature-check disabled"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>Live trading</li>
+                    <li class="feature-check disabled"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>Email/SMS alerts</li>
+                    <li class="feature-check disabled"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>MT5 integration</li>
+                </ul>
+                <a href="#payment" class="block text-center py-3 rounded-lg border border-green-500/30 text-green-400 font-semibold hover:bg-green-500/10 transition-colors">Start Free</a>
+            </div>
+
+            <!-- Trader -->
+            <div class="pricing-card pricing-highlight fade-in fade-in-delay-1">
+                <h3 class="text-xl font-bold text-amber-400 mb-1">Trader</h3>
+                <p class="text-sm text-gray-500 mb-4">For active traders</p>
+                <div class="flex items-baseline gap-1 mb-2">
+                    <span class="price-value" data-price-monthly="$49" data-price-annual="$39">$49</span>
+                    <span class="price-period" data-period-monthly="/mo" data-period-annual="/mo">/mo</span>
+                </div>
+                <p class="annual-savings text-xs text-green-400 mb-4" style="display:none">$470/year (save $118)</p>
+                <p class="text-xs text-gray-500 mb-6">&nbsp;</p>
+                <ul class="space-y-3 mb-8">
+                    <li class="feature-check"><svg class="text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Everything in Paper Trading</li>
+                    <li class="feature-check"><svg class="text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Live trading with real capital</li>
+                    <li class="feature-check"><svg class="text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>5 automated strategies</li>
+                    <li class="feature-check"><svg class="text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Email + SMS alerts</li>
+                    <li class="feature-check"><svg class="text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>MT5 integration</li>
+                    <li class="feature-check"><svg class="text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Portfolio analytics</li>
+                    <li class="feature-check"><svg class="text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Email support</li>
+                    <li class="feature-check disabled"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>API access</li>
+                </ul>
+                <a href="#payment" class="block text-center py-3 rounded-lg btn-cta font-semibold">Subscribe Now</a>
+            </div>
+
+            <!-- Professional -->
+            <div class="pricing-card fade-in fade-in-delay-2" style="border-top:3px solid #3B82F6">
+                <h3 class="text-xl font-bold text-blue-400 mb-1">Professional</h3>
+                <p class="text-sm text-gray-500 mb-4">For power users</p>
+                <div class="flex items-baseline gap-1 mb-2">
+                    <span class="price-value" data-price-monthly="$149" data-price-annual="$119">$149</span>
+                    <span class="price-period" data-period-monthly="/mo" data-period-annual="/mo">/mo</span>
+                </div>
+                <p class="annual-savings text-xs text-green-400 mb-4" style="display:none">$1,430/year (save $358)</p>
+                <p class="text-xs text-gray-500 mb-6">&nbsp;</p>
+                <ul class="space-y-3 mb-8">
+                    <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Everything in Trader</li>
+                    <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Unlimited strategies</li>
+                    <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>API access (REST + WebSocket)</li>
+                    <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Custom strategy builder</li>
+                    <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Priority execution</li>
+                    <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Dedicated support</li>
+                    <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>White-label option</li>
+                    <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Advanced risk management</li>
+                </ul>
+                <a href="#payment" class="block text-center py-3 rounded-lg border border-blue-500/30 text-blue-400 font-semibold hover:bg-blue-500/10 transition-colors">Subscribe Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Feature Matrix -->
+<section class="section-darker py-20">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="section-header fade-in">
+            <h2>Feature Comparison</h2>
+            <p>Detailed breakdown of what is included in each plan</p>
+        </div>
+
+        <div class="overflow-x-auto fade-in">
+            <table class="feature-matrix">
+                <thead>
+                    <tr>
+                        <th class="text-left" style="min-width:200px">Feature</th>
+                        <th style="min-width:120px"><span class="text-green-400">Paper Trading</span></th>
+                        <th style="min-width:120px"><span class="text-amber-400">Trader</span></th>
+                        <th style="min-width:120px"><span class="text-blue-400">Professional</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Live market data</td><td class="check">Yes</td><td class="check">Yes</td><td class="check">Yes</td></tr>
+                    <tr><td>Paper trading</td><td class="check">Yes</td><td class="check">Yes</td><td class="check">Yes</td></tr>
+                    <tr><td>Live trading</td><td class="cross">--</td><td class="check">Yes</td><td class="check">Yes</td></tr>
+                    <tr><td>Strategies</td><td>2</td><td>5</td><td>Unlimited</td></tr>
+                    <tr><td>Backtester</td><td>Basic</td><td>Advanced</td><td>Advanced+</td></tr>
+                    <tr><td>Backtest history</td><td>7 days</td><td>90 days</td><td>365 days</td></tr>
+                    <tr><td>Assets supported</td><td>4</td><td>8</td><td>Unlimited</td></tr>
+                    <tr><td>Email alerts</td><td class="cross">--</td><td class="check">Yes</td><td class="check">Yes</td></tr>
+                    <tr><td>SMS alerts</td><td class="cross">--</td><td class="check">Yes</td><td class="check">Yes</td></tr>
+                    <tr><td>MT5 integration</td><td class="cross">--</td><td class="check">Yes</td><td class="check">Yes</td></tr>
+                    <tr><td>Portfolio analytics</td><td>Basic</td><td>Full</td><td>Full+</td></tr>
+                    <tr><td>API access</td><td class="cross">--</td><td class="cross">--</td><td class="check">REST + WS</td></tr>
+                    <tr><td>Custom strategy builder</td><td class="cross">--</td><td class="cross">--</td><td class="check">Yes</td></tr>
+                    <tr><td>Priority execution</td><td class="cross">--</td><td class="cross">--</td><td class="check">Yes</td></tr>
+                    <tr><td>White-label</td><td class="cross">--</td><td class="cross">--</td><td class="check">Yes</td></tr>
+                    <tr><td>Support</td><td>Community</td><td>Email</td><td>Dedicated</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- Risk Disclaimer -->
+<section class="section-dark py-12">
+    <div class="max-w-3xl mx-auto px-6 fade-in">
+        <div class="risk-box">
+            <div class="flex items-start gap-4">
+                <div class="shrink-0 mt-0.5">
+                    <svg class="w-7 h-7 text-amber-400" fill="none" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-amber-400 tracking-wider uppercase mb-3">Important Risk Disclosure</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Trading cryptocurrency involves substantial risk of loss. Past performance does not guarantee future results. The Trader and Professional plans involve real capital and real risk. Only invest what you can afford to lose. This platform is a trading tool, not financial advice.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing FAQ -->
+<section class="section-darker py-20">
+    <div class="max-w-3xl mx-auto px-6">
+        <div class="section-header fade-in">
+            <h2>Pricing FAQ</h2>
+        </div>
+        <div class="space-y-3 fade-in">
+            <div class="faq-item">
+                <button class="faq-question">What are the limits of the free tier?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <div class="faq-answer"><div class="faq-answer-inner">The free Paper Trading tier includes simulated trading with real market data, 2 strategies (MA Crossover and RSI), basic backtesting with 7 days of history, and support for 4 crypto assets. No live trading or alerts are included.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Can I upgrade or downgrade anytime?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <div class="faq-answer"><div class="faq-answer-inner">Yes, you can upgrade or downgrade at any time. When upgrading, you get immediate access to the new features. When downgrading, your current plan continues until the end of the billing period.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Do you offer refunds?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <div class="faq-answer"><div class="faq-answer-inner">We offer a 7-day refund policy for new subscriptions. If you are not satisfied within the first 7 days, contact us at elvizekaj@zedigital.tech for a full refund. After 7 days, refunds are not available but you can cancel anytime.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">What payment methods do you accept?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <div class="faq-answer"><div class="faq-answer-inner">We accept PayPal, bank transfer (SEPA/IBAN), and cryptocurrency (BTC/ETH on BSC network). See the payment section below for details.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Is there a contract or commitment?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <div class="faq-answer"><div class="faq-answer-inner">No. All plans are month-to-month (or annual if you choose the annual discount). You can cancel at any time with no cancellation fees or penalties.</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Payment Methods -->
+<section id="payment" class="section-dark py-20">
+    <div class="max-w-3xl mx-auto px-6">
+        <div class="section-header fade-in">
+            <h2>Payment Methods</h2>
+            <p>Choose your preferred payment method to get started</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4 fade-in">
+            <!-- PayPal -->
+            <a href="https://paypal.me/zelvi999" target="_blank" class="payment-card flex items-center gap-4 cursor-pointer">
+                <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6 text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c1.652 4.047-1.427 6.795-5.826 6.795h-2.19c-1.047 0-1.935.764-2.098 1.8l-1.12 7.106a.641.641 0 0 0 .633.74h3.42c.524 0 .968-.382 1.05-.9l.862-5.467c.163-1.036 1.051-1.8 2.098-1.8h.688c3.483 0 6.213-1.414 7.01-5.503.334-1.715.148-3.14-.92-4.23z"/></svg>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-gray-200">PayPal</p>
+                    <p class="text-xs text-gray-500">paypal.me/zelvi999</p>
+                </div>
+                <svg class="w-4 h-4 text-gray-600 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+
+            <!-- Bank Transfer -->
+            <div class="payment-card cursor-pointer" onclick="toggleIban()">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-gray-200">Bank Transfer (SEPA)</p>
+                        <p class="text-xs text-gray-500">Click to show IBAN details</p>
+                    </div>
+                    <svg id="iban-arrow" class="w-4 h-4 text-gray-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+                <div id="iban-content" class="iban-content">
+                    <div class="mt-4 bg-surface rounded-lg p-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] text-gray-500 mb-1">IBAN</p>
+                                <p class="text-sm text-gray-200 font-mono">AL-C0100002334708</p>
+                            </div>
+                            <button data-copy="AL-C0100002334708" class="text-xs text-amber-400 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-gray-700 hover:border-amber-400/50 flex-shrink-0">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crypto -->
+            <div class="payment-card sm:col-span-2">
+                <div class="flex items-center gap-4 mb-3">
+                    <div class="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-gray-200">Cryptocurrency (BSC Network)</p>
+                        <p class="text-xs text-gray-500">BTC or ETH on Binance Smart Chain</p>
+                    </div>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-2">
+                    <div class="bg-surface rounded-lg p-3">
+                        <p class="text-[10px] text-amber-400 font-semibold mb-1">BSC Address</p>
+                        <p class="text-[11px] text-gray-400 font-mono break-all select-all">0x65ec5fcc684d1978cddaed29032aaeffc6248a84</p>
+                        <button data-copy="0x65ec5fcc684d1978cddaed29032aaeffc6248a84" class="text-xs text-amber-400 hover:text-white transition-colors mt-2">Copy Address</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-xs text-gray-600 text-center mt-6 fade-in">After payment, email <a href="mailto:elvizekaj@zedigital.tech" class="text-amber-400 hover:underline">elvizekaj@zedigital.tech</a> with your transaction details to activate your account.</p>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section-darker py-16">
+    <div class="max-w-xl mx-auto px-6 text-center fade-in">
+        <h2 class="text-2xl font-bold text-white mb-4">Not sure which plan is right?</h2>
+        <p class="text-gray-400 mb-6">Start with Paper Trading for free. No credit card required. Upgrade anytime.</p>
+        <a href="index.html" class="btn-cta">Start with Paper Trading &mdash; Free</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="nav-logo"><svg viewBox="0 0 28 28" fill="none" style="width:28px;height:28px;color:#F59E0B"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg><span style="font-size:0.9rem;font-weight:700;color:#F59E0B">Ultimate Trading Bot</span></a>
+                <p>AI-powered multi-asset crypto trading platform by ZeDigital.</p>
+            </div>
+            <div class="footer-links"><h4>Product</h4><ul><li><a href="features.html">Features</a></li><li><a href="demo.html">Demo</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+            <div class="footer-links"><h4>Legal</h4><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-links"><h4>Connect</h4><ul><li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li><li><a href="https://zedigital.tech" target="_blank">ZeDigital</a></li><li><a href="mailto:elvizekaj@zedigital.tech">Contact</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ZeDigital. All rights reserved.</p>
+            <p>Past performance is not indicative of future results. Trading involves risk of loss.</p>
+            <div class="footer-social"><a href="https://github.com/ezekaj/forex_2026" target="_blank" aria-label="GitHub"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

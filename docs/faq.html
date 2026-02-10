@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Ultimate Trading Bot</title>
+    <meta name="description" content="Frequently asked questions about the Ultimate Trading Bot. Learn about paper trading, strategies, pricing, API access, risk management, and more.">
+    <meta property="og:title" content="FAQ - Ultimate Trading Bot">
+    <meta property="og:description" content="Answers to common questions about AI-powered crypto trading, pricing, strategies, and risk.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="https://ezekaj.github.io/forex_2026/faq.html">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { navy: '#111827', surface: '#0D1117', card: '#151C28', 'card-alt': '#1A2233' }, fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'SFMono-Regular', 'monospace'] } } }
+        }
+    </script>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo"><svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg><span>Ultimate Trading Bot</span></a>
+        <ul class="nav-links">
+            <li><a href="features.html">Features</a></li>
+            <li><a href="demo.html">Demo</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="faq.html" class="active">FAQ</a></li>
+            <li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li>
+        </ul>
+        <a href="pricing.html" class="nav-cta btn-cta btn-cta-sm">Start Trading</a>
+        <button id="hamburger-btn" class="hamburger" aria-label="Menu"><span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span></button>
+    </div>
+</nav>
+<div id="mobile-menu" class="mobile-menu"><div class="mobile-menu-inner"><a href="features.html">Features</a><a href="demo.html">Demo</a><a href="pricing.html">Pricing</a><a href="faq.html">FAQ</a><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a><a href="pricing.html" class="btn-cta btn-cta-sm text-center mt-2">Start Trading</a></div></div>
+
+<!-- Ticker -->
+<div class="ticker-wrap" style="margin-top:56px"><div class="ticker-track"><span class="ticker-item" style="color:#9CA3AF">Loading live prices...</span></div></div>
+
+<!-- Hero -->
+<section class="section-dark py-20">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4 fade-in">Frequently Asked Questions</h1>
+        <p class="text-lg text-gray-400 fade-in">Everything you need to know about the Ultimate Trading Bot</p>
+    </div>
+</section>
+
+<!-- General -->
+<section class="section-darker py-16">
+    <div class="max-w-3xl mx-auto px-6">
+        <h2 class="text-xl font-bold text-amber-400 mb-6 fade-in">General</h2>
+        <div class="space-y-3 fade-in">
+            <div class="faq-item"><button class="faq-question">What is the Ultimate Trading Bot?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The Ultimate Trading Bot is an AI-powered multi-asset crypto trading platform. It provides real-time market data, automated trading strategies, backtesting, paper trading, and portfolio management tools. It is built by ZeDigital and deployed on Fly.io for global low-latency access.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">What assets can I trade?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The platform supports major cryptocurrencies: Bitcoin (BTC), Ethereum (ETH), Solana (SOL), BNB, Cardano (ADA), Polkadot (DOT), Avalanche (AVAX), and Polygon (MATIC). The Professional plan supports additional assets. All price data comes from CoinGecko.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Is this real money trading?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The free Paper Trading tier uses simulated execution with real market data -- no real money is at risk. The Trader ($49/mo) and Professional ($149/mo) plans support live trading with real capital through MetaTrader 5 integration. You control when and how much real capital to deploy.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">How does paper trading work?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">Paper trading gives you $10,000 in virtual capital. You can buy and sell crypto assets using real market prices. Your positions, P&L, trade history, and risk metrics are all tracked exactly as they would be with real money, but no actual capital is at risk. It is the best way to learn and test strategies.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">What trading strategies are available?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The platform includes 4 built-in strategies: MA Crossover (20/50 period moving average), RSI Reversal (30/70 thresholds), MACD Signal (momentum-based), and Bollinger Bands (volatility-based). Free users get 2 strategies, Trader gets 5, and Professional gets unlimited with a custom strategy builder.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Where does the market data come from?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">All market data is sourced from the CoinGecko API, one of the most comprehensive and reliable crypto data providers. Prices are updated in real-time via WebSocket connections. Historical data for backtesting is also from CoinGecko.</div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing -->
+<section class="section-dark py-16">
+    <div class="max-w-3xl mx-auto px-6">
+        <h2 class="text-xl font-bold text-amber-400 mb-6 fade-in">Pricing & Billing</h2>
+        <div class="space-y-3 fade-in">
+            <div class="faq-item"><button class="faq-question">What are the free tier limitations?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The free Paper Trading tier includes: simulated trading with real market data, 2 strategies (MA Crossover and RSI), basic backtesting with 7 days of history, 4 crypto assets, and community support. No live trading, alerts, or MT5 integration.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">How do I upgrade my plan?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">To upgrade, visit the Pricing page and select your desired plan. Complete payment via PayPal, bank transfer, or cryptocurrency. Then email elvizekaj@zedigital.tech with your transaction details and we will activate your account within 24 hours.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Do you offer refunds?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">We offer a 7-day refund policy for new subscriptions. If you are not satisfied within the first 7 days, email elvizekaj@zedigital.tech for a full refund. After 7 days, refunds are not available, but you can cancel anytime with no further charges.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Is there an annual discount?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">Yes. Annual billing saves 20%: Trader is $470/year (instead of $588) and Professional is $1,430/year (instead of $1,788). You can switch between monthly and annual billing at any time.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">What payment methods are accepted?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">We accept PayPal (paypal.me/zelvi999), bank transfer via IBAN (AL-C0100002334708), and cryptocurrency on the BSC network (address: 0x65ec5fcc684d1978cddaed29032aaeffc6248a84). All payment details are on the Pricing page.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Can I cancel anytime?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">Yes. All plans are cancel-anytime with no long-term contracts or cancellation fees. Your access continues until the end of the current billing period. Email elvizekaj@zedigital.tech to cancel.</div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- Technical -->
+<section class="section-darker py-16">
+    <div class="max-w-3xl mx-auto px-6">
+        <h2 class="text-xl font-bold text-amber-400 mb-6 fade-in">Technical</h2>
+        <div class="space-y-3 fade-in">
+            <div class="faq-item"><button class="faq-question">What are the API rate limits?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">API access is available on the Professional plan. Rate limits are: REST API at 100 requests/minute, WebSocket connections limited to 5 concurrent streams. These limits are sufficient for most trading strategies and can be increased on request for enterprise users.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Can I customize trading strategies?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">Professional plan users have access to the custom strategy builder. You can define entry/exit conditions using technical indicators, set custom parameters (like MA periods or RSI thresholds), and combine multiple indicators. Paper Trading and Trader plans use the 4 built-in strategies with their default parameters.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">What data sources does the backtester use?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The backtester uses historical OHLCV (Open, High, Low, Close, Volume) data from CoinGecko. Free plans can backtest 7 days, Trader plans up to 90 days, and Professional plans up to 365 days of historical data.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">How does the MetaTrader 5 integration work?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The Trader and Professional plans connect to your MT5 broker account for live trade execution. You provide your MT5 credentials during setup, and the bot sends orders directly to your broker. Smart order routing minimizes slippage and ensures best-price fills.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Is there a mobile app?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The web platform is fully responsive and works well on mobile browsers. A dedicated mobile app is on the roadmap. Email and SMS alerts ensure you stay informed about trading signals even when not actively monitoring the platform.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Can I export my trade data?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">Yes. All trade history, positions, and performance data can be exported to CSV. Professional plan users also have API access for programmatic data retrieval. This is useful for tax reporting and performance analysis.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">What happens if the server goes down?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The platform is deployed on Fly.io with automatic failover and 99.9% uptime SLA. If the primary server becomes unavailable, traffic is automatically routed to a backup instance. Open positions have stop-loss orders at the broker level, so they are protected even during platform downtime.</div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- Risk -->
+<section class="section-dark py-16">
+    <div class="max-w-3xl mx-auto px-6">
+        <h2 class="text-xl font-bold text-amber-400 mb-6 fade-in">Risk & Safety</h2>
+        <div class="space-y-3 fade-in">
+            <div class="faq-item"><button class="faq-question">Is crypto trading risky?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">Yes. Trading cryptocurrency involves substantial risk of loss and is not suitable for all investors. Markets are volatile and prices can change rapidly. Even with automated strategies, losses are possible. We strongly recommend starting with paper trading to understand the risks before using real capital.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">What about losses? Can I lose all my money?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">While the risk management system includes stop-losses and position sizing to limit losses, it is possible to lose a significant portion of your trading capital. Never trade with money you cannot afford to lose. The bot is a tool that assists with trading decisions, but it does not guarantee profits.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Is this financial advice?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">No. The Ultimate Trading Bot is a software tool, not a financial advisor. Nothing on this platform constitutes financial advice, investment advice, or trading advice. You are solely responsible for your trading decisions. Consult a qualified financial advisor before trading with real capital.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">Does past performance guarantee future results?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">No. Past performance, including backtesting results, is not indicative of future results. Market conditions change constantly. A strategy that performed well historically may perform poorly in the future. Backtesting results are theoretical and may not reflect actual trading results due to slippage, fees, and market impact.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">How is my data protected?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">All data is transmitted over encrypted connections (HTTPS/WSS). We do not share your trading data, portfolio information, or personal details with third parties. MT5 credentials are encrypted at rest. See our Privacy Policy for complete details on data handling.</div></div></div>
+
+            <div class="faq-item"><button class="faq-question">What risk management features are included?<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="faq-answer"><div class="faq-answer-inner">The platform includes Kelly Criterion position sizing, dynamic stop-loss levels, portfolio-level drawdown limits, and correlation-aware exposure caps. The Sharpe ratio, max drawdown, win rate, and profit factor are tracked in real time. These tools help manage risk but cannot eliminate it.</div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section-darker py-16">
+    <div class="max-w-xl mx-auto px-6 text-center fade-in">
+        <h2 class="text-2xl font-bold text-white mb-4">Still have questions?</h2>
+        <p class="text-gray-400 mb-6">Contact us at <a href="mailto:elvizekaj@zedigital.tech" class="text-amber-400 hover:underline">elvizekaj@zedigital.tech</a> and we will respond within 24 hours.</p>
+        <a href="pricing.html" class="btn-cta">Get Started</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-brand"><a href="index.html" class="nav-logo"><svg viewBox="0 0 28 28" fill="none" style="width:28px;height:28px;color:#F59E0B"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg><span style="font-size:0.9rem;font-weight:700;color:#F59E0B">Ultimate Trading Bot</span></a><p>AI-powered multi-asset crypto trading platform by ZeDigital.</p></div>
+            <div class="footer-links"><h4>Product</h4><ul><li><a href="features.html">Features</a></li><li><a href="demo.html">Demo</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+            <div class="footer-links"><h4>Legal</h4><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-links"><h4>Connect</h4><ul><li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li><li><a href="https://zedigital.tech" target="_blank">ZeDigital</a></li><li><a href="mailto:elvizekaj@zedigital.tech">Contact</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ZeDigital. All rights reserved.</p>
+            <p>Past performance is not indicative of future results. Trading involves risk of loss.</p>
+            <div class="footer-social"><a href="https://github.com/ezekaj/forex_2026" target="_blank" aria-label="GitHub"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a></div>
+        </div>
+    </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
