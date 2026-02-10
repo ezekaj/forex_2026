@@ -550,10 +550,95 @@
         }
     };
 
+    // ── Scroll Progress Bar ────────────────────────────────────────
+    function initScrollProgress() {
+        var bar = document.querySelector('.scroll-progress');
+        if (!bar) return;
+
+        window.addEventListener('scroll', function() {
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            var scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            bar.style.width = scrollPercent + '%';
+        }, { passive: true });
+    }
+
+    // ── Nav Scroll Effect (transparent → solid + shadow) ─────────
+    function initNavScrollEffect() {
+        var nav = document.querySelector('.site-nav');
+        if (!nav) return;
+
+        var scrolled = false;
+        window.addEventListener('scroll', function() {
+            var shouldBeScrolled = window.pageYOffset > 20;
+            if (shouldBeScrolled !== scrolled) {
+                scrolled = shouldBeScrolled;
+                if (scrolled) {
+                    nav.classList.add('nav-scrolled');
+                } else {
+                    nav.classList.remove('nav-scrolled');
+                }
+            }
+        }, { passive: true });
+    }
+
+    // ── Parallax on Hero Elements ────────────────────────────────
+    function initParallax() {
+        var blobs = document.querySelectorAll('.hero-blob');
+        var heroChart = document.querySelector('.hero-chart-float');
+        if (!blobs.length && !heroChart) return;
+
+        window.addEventListener('scroll', function() {
+            var scrollY = window.pageYOffset;
+            if (scrollY > 800) return;
+
+            blobs.forEach(function(blob, i) {
+                var speed = 0.15 + (i * 0.05);
+                blob.style.transform = 'translateY(' + (scrollY * speed) + 'px)';
+            });
+
+            if (heroChart) {
+                heroChart.style.transform = 'translateY(' + (scrollY * -0.08) + 'px)';
+            }
+        }, { passive: true });
+    }
+
+    // ── Dynamic Year ─────────────────────────────────────────────
+    function initDynamicYear() {
+        var yearSpans = document.querySelectorAll('.dynamic-year');
+        var year = new Date().getFullYear();
+        yearSpans.forEach(function(el) {
+            el.textContent = year;
+        });
+    }
+
+    // ── Enhanced Scroll Reveal with Stagger ──────────────────────
+    function initStaggerReveal() {
+        var groups = document.querySelectorAll('[data-stagger]');
+        if (!groups.length || !('IntersectionObserver' in window)) return;
+
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var children = entry.target.querySelectorAll('.fade-in');
+                    children.forEach(function(child, i) {
+                        setTimeout(function() {
+                            child.classList.add('visible');
+                        }, i * 120);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        groups.forEach(function(group) { observer.observe(group); });
+    }
+
     // ── Initialize Everything ──────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function() {
         initMobileMenu();
         initScrollReveal();
+        initStaggerReveal();
         initFaqAccordion();
         initPricingToggle();
         initCopyButtons();
@@ -561,6 +646,10 @@
         initCounterAnimations();
         initTickerTape();
         initHeroChart();
+        initScrollProgress();
+        initNavScrollEffect();
+        initParallax();
+        initDynamicYear();
 
         // Init demo if on demo page
         if (document.getElementById('demo-container')) {

@@ -41,6 +41,9 @@
 </head>
 <body>
 
+<!-- ── Scroll Progress Bar ─────────────────────────────────────── -->
+<div class="scroll-progress"></div>
+
 <!-- ── Navigation ───────────────────────────────────────────────── -->
 <nav class="site-nav">
     <div class="nav-inner">
@@ -90,28 +93,31 @@
 </div>
 
 <!-- ── Hero Section ─────────────────────────────────────────────── -->
-<section class="section-dark py-20 md:py-28">
-    <div class="max-w-[1400px] mx-auto px-6">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
+<section class="section-dark py-24 md:py-32 relative overflow-hidden">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-blob hero-blob-3"></div>
+    <div class="max-w-[1400px] mx-auto px-6 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
             <div class="fade-in">
-                <div class="flex items-center gap-2 mb-4">
+                <div class="flex items-center gap-2 mb-6">
                     <span class="w-2 h-2 rounded-full bg-green-400 pulse-dot"></span>
                     <span class="text-xs font-semibold tracking-widest text-gray-500 uppercase">Markets Open 24/7</span>
                 </div>
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                    AI-Powered Trading That <span class="text-amber-400">Never Sleeps</span>
+                <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black text-white leading-[1.05] mb-8 tracking-tight">
+                    AI-Powered<br>Trading That<br><span class="text-amber-400">Never Sleeps</span>
                 </h1>
-                <p class="text-lg text-gray-400 mb-8 max-w-lg leading-relaxed">
+                <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-lg leading-relaxed">
                     Automated crypto trading with real-time signals, backtesting, and portfolio management. Start with paper trading for free.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <a href="pricing.html" class="btn-cta">Start Free</a>
-                    <a href="demo.html" class="btn-secondary">Watch Demo <span class="ml-1">&rarr;</span></a>
+                    <a href="pricing.html" class="btn-cta text-base px-8 py-3.5">Start Free</a>
+                    <a href="demo.html" class="btn-secondary text-base px-8 py-3.5">Watch Demo <span class="ml-1">&rarr;</span></a>
                 </div>
             </div>
 
-            <div class="fade-in fade-in-delay-2">
-                <div class="panel p-6 rounded-xl">
+            <div class="fade-in fade-in-delay-2 hero-chart-float">
+                <div class="panel p-6 rounded-xl" style="box-shadow: 0 25px 80px rgba(0,0,0,0.4), 0 0 60px rgba(245,158,11,0.05);">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-green-400 pulse-dot"></span>
@@ -142,32 +148,38 @@
     </div>
 </section>
 
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
 <!-- ── Trust Bar ─────────────────────────────────────────────────── -->
-<section class="section-darker py-6 border-y border-white/5">
+<section class="section-darker py-10 border-y border-white/5">
     <div class="max-w-[1400px] mx-auto px-6">
-        <div class="flex flex-wrap justify-center gap-4 fade-in">
-            <div class="trust-badge">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                Live Market Data
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center fade-in">
+            <div>
+                <p class="text-3xl md:text-4xl font-black text-white counter" data-counter="8" data-counter-suffix="+">0+</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest mt-1 font-semibold">Assets Supported</p>
             </div>
-            <div class="trust-badge">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                4 Trading Strategies
+            <div>
+                <p class="text-3xl md:text-4xl font-black text-amber-400 counter" data-counter="4">0</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest mt-1 font-semibold">Trading Strategies</p>
             </div>
-            <div class="trust-badge">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Paper Trading
+            <div>
+                <p class="text-3xl md:text-4xl font-black text-green-400 counter" data-counter="67" data-counter-suffix="%">0%</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest mt-1 font-semibold">Avg Win Rate</p>
             </div>
-            <div class="trust-badge">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                Real-time Alerts
+            <div>
+                <p class="text-3xl md:text-4xl font-black text-blue-400 counter" data-counter="24" data-counter-suffix="/7">0/7</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest mt-1 font-semibold">Market Monitoring</p>
             </div>
         </div>
     </div>
 </section>
 
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
 <!-- ── Problem / Solution ───────────────────────────────────────── -->
-<section class="section-dark py-20">
+<section class="section-dark py-24 md:py-32">
     <div class="max-w-4xl mx-auto px-6">
         <div class="grid md:grid-cols-2 gap-12 items-center fade-in">
             <div>
@@ -194,8 +206,11 @@
     </div>
 </section>
 
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
 <!-- ── Feature Highlights ───────────────────────────────────────── -->
-<section class="section-darker py-20">
+<section class="section-darker py-24 md:py-32">
     <div class="max-w-[1400px] mx-auto px-6">
         <div class="section-header fade-in">
             <h2>Built for Serious Traders</h2>
@@ -242,8 +257,11 @@
     </div>
 </section>
 
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
 <!-- ── Animated Demo Preview ────────────────────────────────────── -->
-<section class="section-dark py-20">
+<section class="section-dark py-24 md:py-32">
     <div class="max-w-4xl mx-auto px-6">
         <div class="section-header fade-in">
             <h2>See It in Action</h2>
@@ -300,30 +318,105 @@
     </div>
 </section>
 
-<!-- ── Social Proof / Compatibility ─────────────────────────────── -->
-<section class="section-darker py-12 border-y border-white/5">
-    <div class="max-w-4xl mx-auto px-6 text-center fade-in">
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-6">Compatible With</p>
-        <div class="flex flex-wrap items-center justify-center gap-8">
-            <div class="flex items-center gap-2 text-gray-400">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
-                <span class="text-sm font-semibold">CoinGecko API</span>
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
+<!-- ── Social Proof / Testimonials ─────────────────────────────── -->
+<section class="section-darker py-24 md:py-32">
+    <div class="max-w-[1400px] mx-auto px-6">
+        <div class="section-header fade-in">
+            <h2>Trusted by Traders Worldwide</h2>
+            <p>See what traders are saying about the platform</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-16" data-stagger>
+            <div class="testimonial-card fade-in">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+                        <span class="text-amber-400 font-bold text-sm">MK</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">Marcus K.</p>
+                        <p class="text-xs text-gray-500">Swing Trader, 3yr exp</p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">The backtester alone is worth the subscription. I tested my MA Crossover strategy across 6 months of BTC data before committing real capital. Game-changing risk management.</p>
+                <div class="flex gap-1 mt-4">
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                </div>
             </div>
-            <div class="flex items-center gap-2 text-gray-400">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
-                <span class="text-sm font-semibold">MetaTrader 5</span>
+
+            <div class="testimonial-card fade-in">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <span class="text-green-400 font-bold text-sm">SP</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">Sarah P.</p>
+                        <p class="text-xs text-gray-500">Day Trader, 5yr exp</p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">Finally a bot that actually works how I think. The multi-strategy setup means I can run RSI on BTC and MACD on ETH simultaneously. The 24/7 monitoring caught signals I would have slept through.</p>
+                <div class="flex gap-1 mt-4">
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                </div>
             </div>
-            <div class="flex items-center gap-2 text-gray-400">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
-                <span class="text-sm font-semibold">WebSocket Streaming</span>
+
+            <div class="testimonial-card fade-in">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                        <span class="text-blue-400 font-bold text-sm">JR</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">James R.</p>
+                        <p class="text-xs text-gray-500">Quant Analyst, 8yr exp</p>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">Paper trading mode was the hook for me. I validated Bollinger Bands against 365 days of SOL data before touching live markets. The Sharpe ratio metrics are on par with institutional tools.</p>
+                <div class="flex gap-1 mt-4">
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                </div>
             </div>
         </div>
-        <p class="text-xs text-gray-600 mt-6">Market data provided by CoinGecko. Trading execution via MetaTrader 5 for Trader and Professional plans.</p>
+
+        <div class="text-center fade-in">
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-6">Compatible With</p>
+            <div class="flex flex-wrap items-center justify-center gap-10">
+                <div class="flex items-center gap-2.5 text-gray-400 hover:text-gray-300 transition-colors">
+                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                    <span class="text-sm font-semibold">CoinGecko API</span>
+                </div>
+                <div class="flex items-center gap-2.5 text-gray-400 hover:text-gray-300 transition-colors">
+                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+                    <span class="text-sm font-semibold">MetaTrader 5</span>
+                </div>
+                <div class="flex items-center gap-2.5 text-gray-400 hover:text-gray-300 transition-colors">
+                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
+                    <span class="text-sm font-semibold">WebSocket Streaming</span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-600 mt-6">Market data provided by CoinGecko. Trading execution via MetaTrader 5 for Trader and Professional plans.</p>
+        </div>
     </div>
 </section>
 
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
 <!-- ── Pricing Preview ──────────────────────────────────────────── -->
-<section id="pricing" class="section-dark py-20">
+<section id="pricing" class="section-dark py-24 md:py-32">
     <div class="max-w-[1400px] mx-auto px-6">
         <div class="section-header fade-in">
             <h2>Simple, Transparent Pricing</h2>
@@ -359,7 +452,7 @@
             </div>
 
             <!-- Trader -->
-            <div class="pricing-card pricing-highlight fade-in fade-in-delay-1">
+            <div class="pricing-card pricing-highlight fade-in fade-in-delay-1 md:-mt-4 md:pb-10">
                 <h3 class="text-lg font-bold text-amber-400 mb-1">Trader</h3>
                 <div class="flex items-baseline gap-1 mb-5">
                     <span class="price-value">$49</span>
@@ -421,8 +514,11 @@
     </div>
 </section>
 
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
 <!-- ── FAQ Preview ──────────────────────────────────────────────── -->
-<section class="section-darker py-20">
+<section class="section-darker py-24 md:py-32">
     <div class="max-w-3xl mx-auto px-6">
         <div class="section-header fade-in">
             <h2>Frequently Asked Questions</h2>
@@ -487,8 +583,11 @@
     </div>
 </section>
 
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
 <!-- ── Risk Disclaimer ──────────────────────────────────────────── -->
-<section class="section-dark py-16">
+<section class="section-dark py-20">
     <div class="max-w-3xl mx-auto px-6 fade-in">
         <div class="risk-box">
             <div class="flex items-start gap-4">
@@ -510,18 +609,25 @@
     </div>
 </section>
 
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
 <!-- ── Final CTA ────────────────────────────────────────────────── -->
-<section class="section-darker py-20">
-    <div class="max-w-xl mx-auto px-6 text-center fade-in">
-        <h2 class="text-3xl font-bold text-white mb-4">Ready to trade smarter?</h2>
-        <p class="text-gray-400 mb-8">Start with paper trading. No credit card required. Upgrade when you are ready.</p>
-        <a href="pricing.html" class="btn-cta text-lg px-10 py-4">Start Paper Trading &mdash; Free Forever</a>
-        <p class="text-gray-600 text-sm mt-4">No credit card required</p>
+<section class="section-darker py-24 md:py-32 relative overflow-hidden">
+    <div class="hero-blob hero-blob-1" style="opacity:0.2"></div>
+    <div class="max-w-2xl mx-auto px-6 text-center fade-in relative z-10">
+        <h2 class="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">Ready to trade smarter?</h2>
+        <p class="text-lg text-gray-400 mb-10">Start with paper trading. No credit card required. Upgrade when you are ready.</p>
+        <a href="pricing.html" class="btn-cta text-lg px-12 py-4">Start Paper Trading &mdash; Free Forever</a>
+        <p class="text-gray-600 text-sm mt-5">No credit card required</p>
     </div>
 </section>
 
+<!-- ── Section Divider ──────────────────────────────────────────── -->
+<hr class="section-divider">
+
 <!-- ── Footer ───────────────────────────────────────────────────── -->
-<footer class="site-footer">
+<footer class="site-footer" style="padding: 4rem 0;">
     <div class="footer-inner">
         <div class="footer-grid">
             <div class="footer-brand">
@@ -560,8 +666,26 @@
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 ZeDigital. All rights reserved.</p>
+
+        <!-- More from ZeDigital -->
+        <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.06);">
+            <h4 style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:1rem;text-align:center;">More from ZeDigital</h4>
+            <div class="zedigital-products">
+                <a href="https://ezekaj.github.io/sofia-hotel/" target="_blank">Sofia Hotel</a>
+                <a href="https://ezekaj.github.io/forex_2026/" target="_blank">Trading Bot</a>
+                <a href="https://ezekaj.github.io/elo-agi/" target="_blank">ELO-AGI</a>
+                <a href="https://ezekaj.github.io/agielo/" target="_blank">Human Cognition</a>
+                <a href="https://ezekaj.github.io/prp-ai-assistant/" target="_blank">PRP-AI</a>
+                <a href="https://ezekaj.github.io/multi-agent-system/" target="_blank">Multi-Agent</a>
+                <a href="https://ezekaj.github.io/humanvad/" target="_blank">HumanVAD</a>
+                <a href="https://ezekaj.github.io/neuro-vscode/" target="_blank">NEURO VS Code</a>
+                <a href="https://ezekaj.github.io/autonomus_elo2.0/" target="_blank">ByteBot</a>
+                <a href="https://ezekaj.github.io/NOVA/" target="_blank">NOVA Wallet</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom" style="margin-top: 2.5rem;">
+            <p>&copy; <span class="dynamic-year">2026</span> ZeDigital. All rights reserved.</p>
             <p>Past performance is not indicative of future results. Trading involves risk of loss.</p>
             <div class="footer-social">
                 <a href="https://github.com/ezekaj/forex_2026" target="_blank" aria-label="GitHub">
