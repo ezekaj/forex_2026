@@ -1,4 +1,5 @@
 import threading
+from decimal import Decimal, ROUND_HALF_UP
 
 from database import (
     get_cash_balance,
@@ -16,47 +17,63 @@ from market import get_price_for_coin, fetch_prices
 _portfolio_lock = threading.Lock()
 
 
+def _to_decimal(value) -> Decimal:
+    return Decimal(str(value))
+
+
+def _round_usd(value: Decimal) -> float:
+    return float(value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+
+
+def _round_qty(value: Decimal) -> float:
+    return float(value.quantize(Decimal("0.00000001"), rounding=ROUND_HALF_UP))
+
+
+def _round_price(value: Decimal) -> float:
+    return float(value.quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP))
+
+
 async def get_portfolio_summary() -> dict:
-    cash = await get_cash_balance()
+    cash = _to_decimal(await get_cash_balance())
     positions = await get_positions()
     prices = await fetch_prices()
 
     holdings = []
-    total_holdings_value = 0.0
+    total_holdings_value = Decimal("0")
 
     for pos in positions:
         coin_id = pos["coin"]
-        amount = pos["amount"]
-        avg_entry = pos["avg_entry_price"]
-        total_cost = pos["total_cost"]
+        amount = _to_decimal(pos["amount"])
+        avg_entry = _to_decimal(pos["avg_entry_price"])
+        total_cost = _to_decimal(pos["total_cost"])
 
-        current_price = 0.0
+        current_price = Decimal("0")
         if coin_id in prices:
-            current_price = prices[coin_id]["price_usd"]
+            current_price = _to_decimal(prices[coin_id]["price_usd"])
         elif get_price_for_coin(coin_id):
-            current_price = get_price_for_coin(coin_id)
+            current_price = _to_decimal(get_price_for_coin(coin_id))
 
         current_value = amount * current_price
         pnl = current_value - total_cost
-        pnl_pct = (pnl / total_cost * 100) if total_cost > 0 else 0
+        pnl_pct = (pnl / total_cost * Decimal("100")) if total_cost > 0 else Decimal("0")
 
         holdings.append({
             "coin": coin_id,
             "symbol": prices.get(coin_id, {}).get("symbol", coin_id.upper()),
-            "amount": round(amount, 8),
-            "avg_entry_price": round(avg_entry, 6),
-            "current_price": round(current_price, 6),
-            "current_value": round(current_value, 2),
-            "total_cost": round(total_cost, 2),
-            "pnl": round(pnl, 2),
-            "pnl_pct": round(pnl_pct, 2),
+            "amount": _round_qty(amount),
+            "avg_entry_price": _round_price(avg_entry),
+            "current_price": _round_price(current_price),
+            "current_value": _round_usd(current_value),
+            "total_cost": _round_usd(total_cost),
+            "pnl": _round_usd(pnl),
+            "pnl_pct": _round_usd(pnl_pct),
         })
         total_holdings_value += current_value
 
     total_value = cash + total_holdings_value
-    initial_balance = 10000.0
+    initial_balance = Decimal("10000")
     total_pnl = total_value - initial_balance
-    total_pnl_pct = (total_pnl / initial_balance * 100) if initial_balance > 0 else 0
+    total_pnl_pct = (total_pnl / initial_balance * Decimal("100")) if initial_balance > 0 else Decimal("0")
 
     trades = await get_trade_history(limit=100)
     snapshots = await get_snapshots(limit=500)
@@ -73,17 +90,17 @@ async def get_portfolio_summary() -> dict:
         ]
         if matching_buys and sell_trade["price"] > matching_buys[-1]["price"]:
             win_count += 1
-    win_rate = (win_count / len(sells) * 100) if sells else 0
+    win_rate = (_to_decimal(win_count) / _to_decimal(len(sells)) * Decimal("100")) if sells else Decimal("0")
 
     return {
-        "cash": round(cash, 2),
+        "cash": _round_usd(cash),
         "holdings": holdings,
-        "total_holdings_value": round(total_holdings_value, 2),
-        "total_value": round(total_value, 2),
-        "total_pnl": round(total_pnl, 2),
-        "total_pnl_pct": round(total_pnl_pct, 2),
+        "total_holdings_value": _round_usd(total_holdings_value),
+        "total_value": _round_usd(total_value),
+        "total_pnl": _round_usd(total_pnl),
+        "total_pnl_pct": _round_usd(total_pnl_pct),
         "total_trades": len(trades),
-        "win_rate": round(win_rate, 1),
+        "win_rate": float(_to_decimal(win_rate).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)),
         "trade_history": trades[:50],
         "portfolio_snapshots": snapshots,
     }
@@ -101,11 +118,15 @@ async def execute_trade(coin_id: str, side: str, amount_usd: float) -> dict:
     if not coin_data:
         return {"success": False, "error": f"Price data not available for {coin_id}"}
 
-    price = coin_data["price_usd"]
-    if price <= 0:
+    price_d = _to_decimal(coin_data["price_usd"])
+    amount_d = _to_decimal(amount_usd)
+
+    if price_d <= 0:
         return {"success": False, "error": "Invalid price data"}
 
-    qty = amount_usd / price
+    qty_d = amount_d / price_d
+    qty = float(qty_d)
+    price = float(price_d)
 
     with _portfolio_lock:
         result = await execute_trade_atomic(coin_id, side, qty, price, amount_usd)
@@ -122,9 +143,9 @@ async def execute_trade(coin_id: str, side: str, amount_usd: float) -> dict:
             "coin": coin_id,
             "symbol": coin_data["symbol"],
             "side": side,
-            "qty": round(qty, 8),
-            "price": round(price, 6),
-            "total_usd": round(amount_usd, 2),
+            "qty": _round_qty(qty_d),
+            "price": _round_price(price_d),
+            "total_usd": _round_usd(amount_d),
         },
         "portfolio": new_portfolio,
     }
