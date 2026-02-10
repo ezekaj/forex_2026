@@ -1,7 +1,10 @@
+import asyncio
 import aiosqlite
 import os
 
 DB_PATH = os.environ.get("DB_PATH", "/data/trading.db")
+
+_trade_lock = asyncio.Lock()
 
 
 async def get_db() -> aiosqlite.Connection:
@@ -201,3 +204,107 @@ async def get_recent_signals(limit: int = 50) -> list:
         return [dict(r) for r in rows]
     finally:
         await db.close()
+
+
+async def execute_trade_atomic(
+    coin_id: str, side: str, qty: float, price: float, amount_usd: float
+) -> dict:
+    async with _trade_lock:
+        db = await get_db()
+        try:
+            await db.execute("BEGIN EXCLUSIVE")
+
+            if side == "buy":
+                row = await db.execute_fetchall(
+                    "SELECT value FROM portfolio_meta WHERE key = 'cash_balance'"
+                )
+                cash = row[0][0] if row else 10000.0
+                if amount_usd > cash:
+                    await db.execute("ROLLBACK")
+                    return {
+                        "success": False,
+                        "error": f"Insufficient cash. Available: ${cash:.2f}",
+                    }
+
+                await db.execute(
+                    "INSERT OR REPLACE INTO portfolio_meta (key, value) VALUES ('cash_balance', ?)",
+                    (cash - amount_usd,),
+                )
+
+                pos_row = await db.execute_fetchall(
+                    "SELECT amount, total_cost FROM portfolio WHERE coin = ?",
+                    (coin_id,),
+                )
+                if pos_row:
+                    current_amount = pos_row[0][0]
+                    current_cost = pos_row[0][1]
+                    new_amount = current_amount + qty
+                    new_cost = current_cost + amount_usd
+                    new_avg = new_cost / new_amount if new_amount > 0 else 0
+                    await db.execute(
+                        "UPDATE portfolio SET amount = ?, avg_entry_price = ?, total_cost = ? WHERE coin = ?",
+                        (new_amount, new_avg, new_cost, coin_id),
+                    )
+                else:
+                    avg_price = amount_usd / qty if qty > 0 else 0
+                    await db.execute(
+                        "INSERT INTO portfolio (coin, amount, avg_entry_price, total_cost) VALUES (?, ?, ?, ?)",
+                        (coin_id, qty, avg_price, amount_usd),
+                    )
+
+                await db.execute(
+                    "INSERT INTO trades (coin, side, amount, price, total_usd) VALUES (?, ?, ?, ?, ?)",
+                    (coin_id, "buy", qty, price, amount_usd),
+                )
+
+            else:
+                pos_row = await db.execute_fetchall(
+                    "SELECT amount, avg_entry_price, total_cost FROM portfolio WHERE coin = ?",
+                    (coin_id,),
+                )
+                pos_amount = pos_row[0][0] if pos_row else 0
+                if not pos_row or pos_amount < qty:
+                    await db.execute("ROLLBACK")
+                    return {
+                        "success": False,
+                        "error": f"Insufficient holdings. Available: {pos_amount:.8f}",
+                    }
+
+                avg_entry = pos_row[0][1]
+                current_cost = pos_row[0][2]
+                cost_basis = qty * avg_entry
+                new_amount = pos_amount - qty
+                new_cost = current_cost - cost_basis
+                if new_amount < 0.00000001:
+                    new_amount = 0
+                    new_cost = 0
+                new_avg = new_cost / new_amount if new_amount > 0 else 0
+                await db.execute(
+                    "UPDATE portfolio SET amount = ?, avg_entry_price = ?, total_cost = ? WHERE coin = ?",
+                    (new_amount, new_avg, new_cost, coin_id),
+                )
+
+                row = await db.execute_fetchall(
+                    "SELECT value FROM portfolio_meta WHERE key = 'cash_balance'"
+                )
+                cash = row[0][0] if row else 10000.0
+                await db.execute(
+                    "INSERT OR REPLACE INTO portfolio_meta (key, value) VALUES ('cash_balance', ?)",
+                    (cash + amount_usd,),
+                )
+
+                await db.execute(
+                    "INSERT INTO trades (coin, side, amount, price, total_usd) VALUES (?, ?, ?, ?, ?)",
+                    (coin_id, "sell", qty, price, amount_usd),
+                )
+
+            await db.commit()
+            return {"success": True}
+        except Exception as e:
+            try:
+                await db.execute("ROLLBACK")
+            except Exception:
+                pass
+            return {"success": False, "error": f"Transaction failed: {str(e)}"}
+        finally:
+            await db.close()

@@ -1,3 +1,5 @@
+import threading
+
 from database import (
     get_cash_balance,
     set_cash_balance,
@@ -7,8 +9,11 @@ from database import (
     get_trade_history,
     record_snapshot,
     get_snapshots,
+    execute_trade_atomic,
 )
 from market import get_price_for_coin, fetch_prices
+
+_portfolio_lock = threading.Lock()
 
 
 async def get_portfolio_summary() -> dict:
@@ -102,32 +107,11 @@ async def execute_trade(coin_id: str, side: str, amount_usd: float) -> dict:
 
     qty = amount_usd / price
 
-    if side == "buy":
-        cash = await get_cash_balance()
-        if amount_usd > cash:
-            return {
-                "success": False,
-                "error": f"Insufficient cash. Available: ${cash:.2f}",
-            }
-        await set_cash_balance(cash - amount_usd)
-        await update_position(coin_id, qty, amount_usd)
-        await record_trade(coin_id, "buy", qty, price, amount_usd)
+    with _portfolio_lock:
+        result = await execute_trade_atomic(coin_id, side, qty, price, amount_usd)
 
-    else:
-        positions = await get_positions()
-        pos = next((p for p in positions if p["coin"] == coin_id), None)
-        if not pos or pos["amount"] < qty:
-            available = pos["amount"] if pos else 0
-            return {
-                "success": False,
-                "error": f"Insufficient {coin_data['symbol']} holdings. Available: {available:.8f}",
-            }
-        avg_entry = pos["avg_entry_price"]
-        cost_basis = qty * avg_entry
-        await update_position(coin_id, -qty, -cost_basis)
-        cash = await get_cash_balance()
-        await set_cash_balance(cash + amount_usd)
-        await record_trade(coin_id, "sell", qty, price, amount_usd)
+    if not result["success"]:
+        return result
 
     new_portfolio = await get_portfolio_summary()
     await record_snapshot(new_portfolio["total_value"])
