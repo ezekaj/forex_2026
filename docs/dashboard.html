@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Ultimate Trading Bot</title>
+    <meta name="description" content="Manage your Ultimate Trading Bot account. View plan, billing, and access the trading platform.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { navy: '#111827', surface: '#0D1117', card: '#151C28', 'card-alt': '#1A2233' }, fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'SFMono-Regular', 'monospace'] } } }
+        }
+    </script>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg>
+            <span>Ultimate Trading Bot</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="features.html">Features</a></li>
+            <li><a href="demo.html">Demo</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+        </ul>
+        <div class="flex items-center gap-3">
+            <button onclick="logout()" id="logout-btn" class="text-sm font-medium text-gray-400 hover:text-red-400 transition hidden">Logout</button>
+        </div>
+        <button id="hamburger-btn" class="hamburger" aria-label="Menu">
+            <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+        </button>
+    </div>
+</nav>
+<div id="mobile-menu" class="mobile-menu">
+    <div class="mobile-menu-inner">
+        <a href="features.html">Features</a><a href="demo.html">Demo</a><a href="pricing.html">Pricing</a><a href="faq.html">FAQ</a>
+        <a href="#" onclick="logout(); return false;" id="mobile-logout" class="hidden" style="color:#EF4444">Logout</a>
+    </div>
+</div>
+
+<!-- Login View -->
+<section id="login-view" class="section-dark" style="padding-top: 120px; min-height: 100vh;">
+    <div class="max-w-md mx-auto px-6">
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-5 border border-amber-500/30" style="box-shadow: 0 0 30px rgba(245,158,11,0.15);">
+                <svg class="w-10 h-10 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </div>
+            <h1 class="text-3xl font-black text-white mb-2">Welcome Back</h1>
+            <p class="text-gray-400">Sign in to your Trading Bot account.</p>
+        </div>
+
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-1 block">Email Address</label>
+                <input type="email" id="login-email" required class="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-amber-500 transition" placeholder="john@example.com">
+            </div>
+            <div id="login-error" class="text-sm text-red-400 hidden">No account found with this email. Please sign up first.</div>
+            <button type="submit" class="w-full btn-cta py-3.5 rounded-xl font-bold text-base">Sign In</button>
+        </form>
+
+        <p class="text-center text-xs text-gray-500 mt-5">Don't have an account? <a href="pricing.html" class="text-amber-400 hover:underline font-medium">View plans</a></p>
+    </div>
+</section>
+
+<!-- Dashboard View -->
+<section id="dashboard-view" class="section-dark hidden" style="padding-top: 100px; padding-bottom: 60px; min-height: 100vh;">
+    <div class="max-w-3xl mx-auto px-6">
+
+        <!-- Header Card -->
+        <div class="panel p-6 rounded-xl mb-6" id="header-card">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <h1 class="text-2xl font-black text-white" id="dash-name">-</h1>
+                        <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full" id="dash-status">-</span>
+                    </div>
+                    <p class="text-sm text-gray-500">Member since <span id="dash-since" class="text-gray-400">-</span></p>
+                </div>
+                <div class="flex gap-2">
+                    <a href="demo.html" class="btn-cta btn-cta-sm">Launch Bot</a>
+                    <a href="pricing.html" class="btn-secondary text-sm px-4 py-2 rounded-lg border border-white/10 text-gray-400 hover:text-amber-400 hover:border-amber-500/50 transition">Upgrade</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-6">
+
+            <!-- Plan & Billing -->
+            <div class="panel p-6 rounded-xl">
+                <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+                    Plan & Billing
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-400">Current Plan</span>
+                        <span class="text-sm font-bold" id="dash-plan" style="color:#F59E0B">-</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-400">Price</span>
+                        <span class="text-sm text-white font-mono" id="dash-price">-</span>
+                    </div>
+                    <div class="flex justify-between items-center" id="trial-row">
+                        <span class="text-sm text-gray-400">Trial Ends</span>
+                        <span class="text-sm text-green-400 font-mono" id="dash-trial">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Status -->
+            <div class="panel p-6 rounded-xl">
+                <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Payment Status
+                </h3>
+                <div id="payment-status-content">
+                </div>
+            </div>
+
+            <!-- Account Details -->
+            <div class="panel p-6 rounded-xl">
+                <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    Account Details
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-400">Email</span>
+                        <span class="text-sm text-white" id="dash-email">-</span>
+                    </div>
+                    <div class="flex justify-between items-center" id="phone-row">
+                        <span class="text-sm text-gray-400">Phone</span>
+                        <span class="text-sm text-white" id="dash-phone">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="panel p-6 rounded-xl">
+                <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Quick Actions
+                </h3>
+                <div class="space-y-2">
+                    <a href="demo.html" class="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-amber-500/10 hover:border-amber-500/30 border border-transparent transition group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-amber-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="text-sm text-gray-300 group-hover:text-white transition">Launch Trading Bot</span>
+                    </a>
+                    <a href="pricing.html" class="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-amber-500/10 hover:border-amber-500/30 border border-transparent transition group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-amber-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                        <span class="text-sm text-gray-300 group-hover:text-white transition">Upgrade Plan</span>
+                    </a>
+                    <a href="mailto:elvizekaj@zedigital.tech" class="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-amber-500/10 hover:border-amber-500/30 border border-transparent transition group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-amber-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <span class="text-sm text-gray-300 group-hover:text-white transition">Contact Support</span>
+                    </a>
+                    <a href="faq.html" class="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-amber-500/10 hover:border-amber-500/30 border border-transparent transition group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-amber-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="text-sm text-gray-300 group-hover:text-white transition">FAQ</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer" style="padding: 3rem 0;">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="nav-logo"><svg viewBox="0 0 28 28" fill="none" style="width:28px;height:28px;color:#F59E0B"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg><span style="font-size:0.9rem;font-weight:700;color:#F59E0B">Ultimate Trading Bot</span></a>
+                <p>AI-powered multi-asset crypto trading platform by Z.E Digital Tech.</p>
+                <img src="ze-logo.png" alt="Z.E Digital Tech" class="h-6 w-auto opacity-40 mt-2">
+            </div>
+            <div class="footer-links"><h4>Product</h4><ul><li><a href="features.html">Features</a></li><li><a href="demo.html">Demo</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+            <div class="footer-links"><h4>Legal</h4><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-links"><h4>Connect</h4><ul><li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li><li><a href="https://zedigital.tech" target="_blank">Z.E Digital Tech</a></li><li><a href="mailto:elvizekaj@zedigital.tech">Contact</a></li></ul></div>
+        </div>
+        <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.06);">
+            <h4 style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:1rem;text-align:center;">More from Z.E Digital Tech</h4>
+            <div class="zedigital-products">
+                <a href="https://ezekaj.github.io/sofia-hotel/" target="_blank">Sofia Hotel</a>
+                <a href="https://ezekaj.github.io/forex_2026/" target="_blank">Trading Bot</a>
+                <a href="https://ezekaj.github.io/elo-agi/" target="_blank">ELO-AGI</a>
+                <a href="https://ezekaj.github.io/agielo/" target="_blank">Human Cognition</a>
+                <a href="https://ezekaj.github.io/prp-ai-assistant/" target="_blank">PRP-AI</a>
+                <a href="https://ezekaj.github.io/multi-agent-system/" target="_blank">Multi-Agent</a>
+                <a href="https://ezekaj.github.io/humanvad/" target="_blank">HumanVAD</a>
+                <a href="https://ezekaj.github.io/neuro-vscode/" target="_blank">NEURO VS Code</a>
+                <a href="https://ezekaj.github.io/autonomus_elo2.0/" target="_blank">ByteBot</a>
+                <a href="https://ezekaj.github.io/NOVA/" target="_blank">NOVA Wallet</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Z.E Digital Tech. All rights reserved.</p>
+            <p>Past performance is not indicative of future results. Trading involves risk of loss.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+const PLANS = {
+    paper: { name: 'Paper Trading', price: 'Free', color: '#10B981' },
+    trader: { name: 'Trader', price: '€39/mo', color: '#F59E0B' },
+    professional: { name: 'Professional', price: '€99/mo', color: '#3B82F6' }
+};
+
+function init() {
+    const email = sessionStorage.getItem('utb_email');
+    if (email) {
+        showDashboard();
+    }
+}
+
+// Login
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const stored = sessionStorage.getItem('utb_email');
+
+    if (stored && stored === email) {
+        showDashboard();
+    } else if (stored) {
+        document.getElementById('login-error').classList.remove('hidden');
+    } else {
+        document.getElementById('login-error').classList.remove('hidden');
+    }
+});
+
+function showDashboard() {
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('dashboard-view').classList.remove('hidden');
+    document.getElementById('logout-btn').classList.remove('hidden');
+    document.getElementById('mobile-logout').classList.remove('hidden');
+
+    const name = sessionStorage.getItem('utb_name') || 'User';
+    const email = sessionStorage.getItem('utb_email') || '-';
+    const phone = sessionStorage.getItem('utb_phone') || '';
+    const planKey = sessionStorage.getItem('utb_plan') || 'paper';
+    const status = sessionStorage.getItem('utb_status') || 'pending';
+    const created = sessionStorage.getItem('utb_created');
+    const plan = PLANS[planKey] || PLANS.paper;
+
+    // Header
+    document.getElementById('dash-name').textContent = name;
+    const statusEl = document.getElementById('dash-status');
+    if (status === 'active') {
+        statusEl.textContent = 'Active';
+        statusEl.style.background = 'rgba(16,185,129,0.15)';
+        statusEl.style.color = '#10B981';
+    } else if (status === 'payment_sent') {
+        statusEl.textContent = 'Activating';
+        statusEl.style.background = 'rgba(245,158,11,0.15)';
+        statusEl.style.color = '#F59E0B';
+    } else {
+        statusEl.textContent = 'Pending';
+        statusEl.style.background = 'rgba(107,114,128,0.15)';
+        statusEl.style.color = '#9CA3AF';
+    }
+
+    // Member since
+    if (created) {
+        const d = new Date(created);
+        document.getElementById('dash-since').textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    // Plan & Billing
+    document.getElementById('dash-plan').textContent = plan.name;
+    document.getElementById('dash-plan').style.color = plan.color;
+    document.getElementById('dash-price').textContent = plan.price;
+
+    // Trial
+    if (planKey !== 'paper' && created) {
+        const trialEnd = new Date(new Date(created).getTime() + 14 * 24 * 60 * 60 * 1000);
+        document.getElementById('dash-trial').textContent = trialEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } else {
+        document.getElementById('trial-row').style.display = 'none';
+    }
+
+    // Payment status
+    const payEl = document.getElementById('payment-status-content');
+    if (planKey === 'paper') {
+        payEl.innerHTML = '<div class="flex items-center gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20"><svg class="w-5 h-5 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><p class="text-sm text-green-300">No payment required. Paper Trading is free forever.</p></div>';
+    } else if (status === 'active') {
+        payEl.innerHTML = '<div class="flex items-center gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/20"><svg class="w-5 h-5 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><p class="text-sm text-green-300">Payment confirmed. Your account is active.</p></div>';
+    } else if (status === 'payment_sent') {
+        payEl.innerHTML = '<div class="flex items-center gap-3 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20"><svg class="w-5 h-5 text-amber-400 shrink-0 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div><p class="text-sm text-amber-300">Payment sent. Activation in progress.</p><p class="text-xs text-gray-500 mt-1">Send receipt to <a href="mailto:elvizekaj@zedigital.tech" class="text-amber-400 hover:underline">elvizekaj@zedigital.tech</a> if you haven\'t already.</p></div></div>';
+    } else {
+        payEl.innerHTML = '<div class="space-y-3"><div class="flex items-center gap-3 p-4 rounded-lg bg-white/5 border border-white/10"><svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div><p class="text-sm text-gray-300">Payment pending.</p><p class="text-xs text-gray-500 mt-1">Complete payment to activate your plan.</p></div></div><a href="pricing.html#payment" class="block text-center text-sm text-amber-400 hover:underline mt-2">View payment methods &rarr;</a></div>';
+    }
+
+    // Account details
+    document.getElementById('dash-email').textContent = email;
+    if (phone) {
+        document.getElementById('dash-phone').textContent = phone;
+    } else {
+        document.getElementById('phone-row').style.display = 'none';
+    }
+}
+
+function logout() {
+    sessionStorage.removeItem('utb_name');
+    sessionStorage.removeItem('utb_email');
+    sessionStorage.removeItem('utb_phone');
+    sessionStorage.removeItem('utb_plan');
+    sessionStorage.removeItem('utb_status');
+    sessionStorage.removeItem('utb_created');
+    document.getElementById('login-view').classList.remove('hidden');
+    document.getElementById('dashboard-view').classList.add('hidden');
+    document.getElementById('logout-btn').classList.add('hidden');
+    document.getElementById('mobile-logout').classList.add('hidden');
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-error').classList.add('hidden');
+}
+
+init();
+</script>
+</body>
+</html>

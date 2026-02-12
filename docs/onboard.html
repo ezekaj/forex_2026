@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started - Ultimate Trading Bot</title>
+    <meta name="description" content="Sign up for the Ultimate Trading Bot. Start with free paper trading or choose a paid plan for live trading.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { navy: '#111827', surface: '#0D1117', card: '#151C28', 'card-alt': '#1A2233' }, fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['ui-monospace', 'SFMono-Regular', 'monospace'] } } }
+        }
+    </script>
+    <style>
+        .step-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; transition: all 0.3s; }
+        .step-dot.active { background: #F59E0B; color: #111827; }
+        .step-dot.completed { background: #10B981; color: #fff; }
+        .step-dot.pending { background: #1E293B; color: #6B7280; border: 1px solid #334155; }
+        .step-line { height: 2px; flex: 1; transition: background 0.3s; }
+        .step-line.active { background: #F59E0B; }
+        .step-line.pending { background: #334155; }
+        .iban-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .iban-content.open { max-height: 200px; }
+        .step-panel { display: none; animation: fadeStep 0.4s ease; }
+        .step-panel.active { display: block; }
+        @keyframes fadeStep { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg>
+            <span>Ultimate Trading Bot</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="features.html">Features</a></li>
+            <li><a href="demo.html">Demo</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+        </ul>
+        <div class="flex items-center gap-3">
+            <a href="dashboard.html" class="text-sm font-medium text-gray-400 hover:text-amber-400 transition hidden md:inline-block">Login</a>
+            <a href="pricing.html" class="nav-cta btn-cta btn-cta-sm">Start Trading</a>
+        </div>
+        <button id="hamburger-btn" class="hamburger" aria-label="Menu">
+            <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
+        </button>
+    </div>
+</nav>
+<div id="mobile-menu" class="mobile-menu">
+    <div class="mobile-menu-inner">
+        <a href="features.html">Features</a><a href="demo.html">Demo</a><a href="pricing.html">Pricing</a><a href="faq.html">FAQ</a>
+        <a href="dashboard.html" style="color:#F59E0B">Login</a>
+        <a href="pricing.html" class="btn-cta btn-cta-sm text-center mt-2">Start Trading</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<section class="section-dark" style="padding-top: 100px; min-height: 100vh;">
+    <div class="max-w-xl mx-auto px-6">
+
+        <!-- Step Indicator -->
+        <div class="flex items-center justify-center gap-0 mb-10" id="step-indicator">
+            <div class="step-dot active" data-step="1">1</div>
+            <div class="step-line pending" data-line="1"></div>
+            <div class="step-dot pending" data-step="2">2</div>
+            <div class="step-line pending" data-line="2"></div>
+            <div class="step-dot pending" data-step="3">3</div>
+        </div>
+
+        <!-- STEP 1: Plan & Details -->
+        <div class="step-panel active" id="step-1">
+            <!-- Plan Banner -->
+            <div id="plan-banner" class="panel p-5 rounded-xl mb-8 border-l-4" style="border-left-color: #F59E0B;">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 id="plan-name" class="text-lg font-bold text-white">Trader</h3>
+                            <span id="plan-trial" class="text-[10px] font-bold uppercase tracking-wider bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">14-day free trial</span>
+                        </div>
+                        <p id="plan-features" class="text-sm text-gray-400">Live trading, 5 strategies, MT5 integration</p>
+                    </div>
+                    <div class="text-right">
+                        <p id="plan-price" class="text-2xl font-black text-white">&euro;39<span class="text-sm font-normal text-gray-500">/mo</span></p>
+                    </div>
+                </div>
+                <a href="pricing.html" class="text-xs text-amber-400 hover:underline mt-2 inline-block">Change plan &rarr;</a>
+            </div>
+
+            <h2 class="text-2xl font-bold text-white mb-2">Create your account</h2>
+            <p class="text-sm text-gray-400 mb-6">Enter your details to get started with the Ultimate Trading Bot.</p>
+
+            <form id="register-form" class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-1 block">Full Name</label>
+                    <input type="text" id="reg-name" required class="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-amber-500 transition" placeholder="John Doe">
+                </div>
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-1 block">Email Address</label>
+                    <input type="email" id="reg-email" required class="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-amber-500 transition" placeholder="john@example.com">
+                </div>
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-1 block">Phone <span class="text-gray-600 font-normal normal-case">(optional)</span></label>
+                    <input type="tel" id="reg-phone" class="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-amber-500 transition" placeholder="+1 234 567 890">
+                </div>
+                <button type="submit" class="w-full btn-cta py-3.5 rounded-xl font-bold text-base mt-4">Continue</button>
+            </form>
+
+            <p class="text-center text-xs text-gray-500 mt-5">Already have an account? <a href="dashboard.html" class="text-amber-400 hover:underline font-medium">Sign in</a></p>
+        </div>
+
+        <!-- STEP 2: Payment -->
+        <div class="step-panel" id="step-2">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-4 border border-amber-500/30">
+                    <svg class="w-8 h-8 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-2">Complete Payment</h2>
+                <p class="text-sm text-gray-400">Choose a payment method to start your <span id="payment-plan-name" class="text-amber-400 font-semibold">Trader</span> plan.</p>
+                <p class="text-xs text-green-400 mt-2">Your 14-day free trial starts immediately. Payment is for after the trial.</p>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <!-- PayPal -->
+                <a href="https://paypal.me/zelvi999" target="_blank" class="payment-card flex items-center gap-4 cursor-pointer block">
+                    <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                        <svg class="w-6 h-6 text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c1.652 4.047-1.427 6.795-5.826 6.795h-2.19c-1.047 0-1.935.764-2.098 1.8l-1.12 7.106a.641.641 0 0 0 .633.74h3.42c.524 0 .968-.382 1.05-.9l.862-5.467c.163-1.036 1.051-1.8 2.098-1.8h.688c3.483 0 6.213-1.414 7.01-5.503.334-1.715.148-3.14-.92-4.23z"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-gray-200">PayPal</p>
+                        <p class="text-xs text-gray-500">paypal.me/zelvi999</p>
+                    </div>
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+
+                <!-- Bank Transfer -->
+                <div class="payment-card cursor-pointer" onclick="toggleIban()">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                            <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-gray-200">Bank Transfer (SEPA)</p>
+                            <p class="text-xs text-gray-500">Click to show IBAN details</p>
+                        </div>
+                        <svg id="iban-arrow" class="w-4 h-4 text-gray-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                    <div id="iban-content" class="iban-content">
+                        <div class="mt-4 bg-surface rounded-lg p-3">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 mb-1">IBAN</p>
+                                    <p class="text-sm text-gray-200 font-mono">AL-C0100002334708</p>
+                                </div>
+                                <button data-copy="AL-C0100002334708" class="text-xs text-amber-400 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-gray-700 hover:border-amber-400/50 flex-shrink-0">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crypto -->
+                <div class="payment-card">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
+                            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-200">Cryptocurrency (BSC)</p>
+                            <p class="text-xs text-gray-500">BTC or ETH on Binance Smart Chain</p>
+                        </div>
+                    </div>
+                    <div class="bg-surface rounded-lg p-3">
+                        <p class="text-[10px] text-amber-400 font-semibold mb-1">BSC Address</p>
+                        <p class="text-[11px] text-gray-400 font-mono break-all select-all">0x65ec5fcc684d1978cddaed29032aaeffc6248a84</p>
+                        <button data-copy="0x65ec5fcc684d1978cddaed29032aaeffc6248a84" class="text-xs text-amber-400 hover:text-white transition-colors mt-2">Copy Address</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 mb-6">
+                <p class="text-sm text-gray-300"><span class="text-amber-400 font-bold">After payment:</span> Send your receipt to <a href="mailto:elvizekaj@zedigital.tech" class="text-amber-400 hover:underline">elvizekaj@zedigital.tech</a> and your account will be activated within 24 hours.</p>
+            </div>
+
+            <button onclick="completePayment()" class="w-full btn-cta py-3.5 rounded-xl font-bold text-base">I've Completed Payment</button>
+            <button onclick="skipPayment()" class="w-full text-center text-sm text-gray-500 hover:text-gray-300 transition mt-3 py-2">I'll pay later</button>
+        </div>
+
+        <!-- STEP 3: Welcome -->
+        <div class="step-panel" id="step-3">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-5 border border-green-500/30" style="box-shadow: 0 0 30px rgba(16,185,129,0.15);">
+                    <svg class="w-10 h-10 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <h2 class="text-3xl font-black text-white mb-2">You're all set!</h2>
+                <p class="text-gray-400" id="welcome-message">Your account has been created. Welcome to the Ultimate Trading Bot.</p>
+            </div>
+
+            <!-- Account Summary -->
+            <div class="panel p-6 rounded-xl mb-6">
+                <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-4">Account Summary</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-400">Name</span>
+                        <span class="text-sm text-white font-medium" id="summary-name">-</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-400">Email</span>
+                        <span class="text-sm text-white font-medium" id="summary-email">-</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-400">Plan</span>
+                        <span class="text-sm font-bold" id="summary-plan" style="color:#F59E0B">-</span>
+                    </div>
+                    <div class="flex justify-between items-center" id="summary-status-row">
+                        <span class="text-sm text-gray-400">Status</span>
+                        <span class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full" id="summary-status">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What's Next -->
+            <div class="panel p-5 rounded-xl mb-6 border border-white/5">
+                <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider mb-3">What happens next</h3>
+                <div class="space-y-3" id="next-steps">
+                </div>
+            </div>
+
+            <a href="dashboard.html" class="block w-full btn-cta py-3.5 rounded-xl font-bold text-base text-center">Go to Dashboard</a>
+        </div>
+
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer" style="padding: 3rem 0;">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="nav-logo"><svg viewBox="0 0 28 28" fill="none" style="width:28px;height:28px;color:#F59E0B"><rect x="2" y="2" width="24" height="24" rx="6" stroke="currentColor" stroke-width="2"/><path d="M7 18L11 12L15 15L21 8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="8" r="2" fill="currentColor"/></svg><span style="font-size:0.9rem;font-weight:700;color:#F59E0B">Ultimate Trading Bot</span></a>
+                <p>AI-powered multi-asset crypto trading platform by Z.E Digital Tech.</p>
+                <img src="ze-logo.png" alt="Z.E Digital Tech" class="h-6 w-auto opacity-40 mt-2">
+            </div>
+            <div class="footer-links"><h4>Product</h4><ul><li><a href="features.html">Features</a></li><li><a href="demo.html">Demo</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+            <div class="footer-links"><h4>Legal</h4><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-links"><h4>Connect</h4><ul><li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li><li><a href="https://zedigital.tech" target="_blank">Z.E Digital Tech</a></li><li><a href="mailto:elvizekaj@zedigital.tech">Contact</a></li></ul></div>
+        </div>
+        <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.06);">
+            <h4 style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:1rem;text-align:center;">More from Z.E Digital Tech</h4>
+            <div class="zedigital-products">
+                <a href="https://ezekaj.github.io/sofia-hotel/" target="_blank">Sofia Hotel</a>
+                <a href="https://ezekaj.github.io/forex_2026/" target="_blank">Trading Bot</a>
+                <a href="https://ezekaj.github.io/elo-agi/" target="_blank">ELO-AGI</a>
+                <a href="https://ezekaj.github.io/agielo/" target="_blank">Human Cognition</a>
+                <a href="https://ezekaj.github.io/prp-ai-assistant/" target="_blank">PRP-AI</a>
+                <a href="https://ezekaj.github.io/multi-agent-system/" target="_blank">Multi-Agent</a>
+                <a href="https://ezekaj.github.io/humanvad/" target="_blank">HumanVAD</a>
+                <a href="https://ezekaj.github.io/neuro-vscode/" target="_blank">NEURO VS Code</a>
+                <a href="https://ezekaj.github.io/autonomus_elo2.0/" target="_blank">ByteBot</a>
+                <a href="https://ezekaj.github.io/NOVA/" target="_blank">NOVA Wallet</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Z.E Digital Tech. All rights reserved.</p>
+            <p>Past performance is not indicative of future results. Trading involves risk of loss.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+const PLANS = {
+    paper: { name: 'Paper Trading', price: 'Free', priceLabel: 'Free', color: '#10B981', features: 'Simulated trading, live data, 2 strategies', trial: false },
+    trader: { name: 'Trader', price: '&euro;39', priceLabel: '€39/mo', color: '#F59E0B', features: 'Live trading, 5 strategies, MT5 integration, alerts', trial: true },
+    professional: { name: 'Professional', price: '&euro;99', priceLabel: '€99/mo', color: '#3B82F6', features: 'Unlimited strategies, API access, custom builder, white-label', trial: true }
+};
+
+const urlParams = new URLSearchParams(window.location.search);
+const selectedPlan = urlParams.get('plan') || 'trader';
+const plan = PLANS[selectedPlan] || PLANS.trader;
+let currentStep = 1;
+
+// Session resume
+const stored = sessionStorage.getItem('utb_email');
+if (stored && !urlParams.get('plan')) {
+    window.location.href = 'dashboard.html';
+}
+
+// Init plan banner
+document.getElementById('plan-name').textContent = plan.name;
+document.getElementById('plan-name').style.color = plan.color;
+document.getElementById('plan-features').textContent = plan.features;
+document.getElementById('plan-price').innerHTML = selectedPlan === 'paper' ? 'Free' : plan.price + '<span class="text-sm font-normal text-gray-500">/mo</span>';
+document.getElementById('plan-banner').style.borderLeftColor = plan.color;
+if (!plan.trial) document.getElementById('plan-trial').style.display = 'none';
+
+function showStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('step-' + step).classList.add('active');
+
+    document.querySelectorAll('.step-dot').forEach((dot, i) => {
+        const s = i + 1;
+        dot.className = 'step-dot ' + (s < step ? 'completed' : s === step ? 'active' : 'pending');
+        if (s < step) dot.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>';
+        else dot.textContent = s;
+    });
+    document.querySelectorAll('.step-line').forEach((line, i) => {
+        line.className = 'step-line ' + ((i + 1) < step ? 'active' : 'pending');
+    });
+}
+
+// Step 1: Register
+document.getElementById('register-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const phone = document.getElementById('reg-phone').value.trim();
+
+    if (!name || !email) return;
+
+    sessionStorage.setItem('utb_name', name);
+    sessionStorage.setItem('utb_email', email);
+    sessionStorage.setItem('utb_phone', phone);
+    sessionStorage.setItem('utb_plan', selectedPlan);
+    sessionStorage.setItem('utb_created', new Date().toISOString());
+
+    if (selectedPlan === 'paper') {
+        sessionStorage.setItem('utb_status', 'active');
+        showStep(3);
+        renderWelcome();
+    } else {
+        sessionStorage.setItem('utb_status', 'pending');
+        document.getElementById('payment-plan-name').textContent = plan.name;
+        showStep(2);
+    }
+});
+
+// Step 2: Payment
+function completePayment() {
+    sessionStorage.setItem('utb_status', 'payment_sent');
+    showStep(3);
+    renderWelcome();
+}
+
+function skipPayment() {
+    showStep(3);
+    renderWelcome();
+}
+
+function toggleIban() {
+    const content = document.getElementById('iban-content');
+    const arrow = document.getElementById('iban-arrow');
+    content.classList.toggle('open');
+    arrow.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+
+// Step 3: Welcome
+function renderWelcome() {
+    const name = sessionStorage.getItem('utb_name');
+    const email = sessionStorage.getItem('utb_email');
+    const status = sessionStorage.getItem('utb_status');
+    const planKey = sessionStorage.getItem('utb_plan');
+    const p = PLANS[planKey] || PLANS.paper;
+
+    document.getElementById('summary-name').textContent = name;
+    document.getElementById('summary-email').textContent = email;
+    document.getElementById('summary-plan').textContent = p.name;
+    document.getElementById('summary-plan').style.color = p.color;
+
+    const statusEl = document.getElementById('summary-status');
+    if (status === 'active') {
+        statusEl.textContent = 'Active';
+        statusEl.style.background = 'rgba(16,185,129,0.15)';
+        statusEl.style.color = '#10B981';
+        document.getElementById('welcome-message').textContent = 'Your Paper Trading account is ready. Start trading risk-free with live market data.';
+    } else if (status === 'payment_sent') {
+        statusEl.textContent = 'Payment Sent';
+        statusEl.style.background = 'rgba(245,158,11,0.15)';
+        statusEl.style.color = '#F59E0B';
+        document.getElementById('welcome-message').textContent = 'Thank you! Your payment is being processed. We\'ll activate your account within 24 hours.';
+    } else {
+        statusEl.textContent = 'Pending Payment';
+        statusEl.style.background = 'rgba(107,114,128,0.15)';
+        statusEl.style.color = '#9CA3AF';
+        document.getElementById('welcome-message').textContent = 'Your account is created. Complete payment to activate your ' + p.name + ' plan.';
+    }
+
+    // Next steps
+    const stepsEl = document.getElementById('next-steps');
+    let steps = [];
+    if (planKey === 'paper') {
+        steps = [
+            { icon: '1', text: 'Go to your Dashboard to view your account' },
+            { icon: '2', text: 'Launch the Trading Bot and start paper trading' },
+            { icon: '3', text: 'Upgrade anytime to Trader for live trading' },
+        ];
+    } else if (status === 'payment_sent') {
+        steps = [
+            { icon: '1', text: 'Send payment receipt to <a href="mailto:elvizekaj@zedigital.tech" class="text-amber-400 hover:underline">elvizekaj@zedigital.tech</a>' },
+            { icon: '2', text: 'Your account will be activated within 24 hours' },
+            { icon: '3', text: 'Check your Dashboard for activation status' },
+        ];
+    } else {
+        steps = [
+            { icon: '1', text: 'Complete payment via PayPal, bank transfer, or crypto' },
+            { icon: '2', text: 'Send receipt to <a href="mailto:elvizekaj@zedigital.tech" class="text-amber-400 hover:underline">elvizekaj@zedigital.tech</a>' },
+            { icon: '3', text: 'Your account will be activated within 24 hours' },
+        ];
+    }
+    stepsEl.innerHTML = steps.map(s => `
+        <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-xs font-bold text-gray-400 shrink-0 mt-0.5">${s.icon}</span>
+            <p class="text-sm text-gray-300">${s.text}</p>
+        </div>
+    `).join('');
+}
+
+// Init copy buttons
+document.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const text = this.getAttribute('data-copy');
+        navigator.clipboard.writeText(text).then(() => {
+            const orig = this.textContent;
+            this.textContent = 'Copied!';
+            setTimeout(() => this.textContent = orig, 2000);
+        });
+    });
+});
+</script>
+</body>
+</html>

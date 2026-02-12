@@ -41,7 +41,10 @@
             <li><a href="faq.html">FAQ</a></li>
             <li><a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a></li>
         </ul>
-        <a href="#payment" class="nav-cta btn-cta btn-cta-sm">Start Trading</a>
+        <div class="flex items-center gap-3">
+            <a href="dashboard.html" class="text-sm font-medium text-gray-400 hover:text-amber-400 transition hidden md:inline-block">Login</a>
+            <a href="#payment" class="nav-cta btn-cta btn-cta-sm">Start Trading</a>
+        </div>
         <button id="hamburger-btn" class="hamburger" aria-label="Menu">
             <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
         </button>
@@ -51,6 +54,7 @@
     <div class="mobile-menu-inner">
         <a href="features.html">Features</a><a href="demo.html">Demo</a><a href="pricing.html">Pricing</a><a href="faq.html">FAQ</a>
         <a href="https://github.com/ezekaj/forex_2026" target="_blank">GitHub</a>
+        <a href="dashboard.html" style="color:#F59E0B">Login</a>
         <a href="#payment" class="btn-cta btn-cta-sm text-center mt-2">Start Trading</a>
     </div>
 </div>
@@ -94,7 +98,7 @@
                     <li class="feature-check disabled"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>Email/SMS alerts</li>
                     <li class="feature-check disabled"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>MT5 integration</li>
                 </ul>
-                <a href="#payment" class="block text-center py-3 rounded-lg border border-green-500/30 text-green-400 font-semibold hover:bg-green-500/10 transition-colors">Start Free</a>
+                <a href="onboard.html?plan=paper" class="block text-center py-3 rounded-lg border border-green-500/30 text-green-400 font-semibold hover:bg-green-500/10 transition-colors">Start Free</a>
             </div>
 
             <!-- Trader -->
@@ -120,7 +124,7 @@
                     <li class="feature-check"><svg class="text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Email support (24h response)</li>
                     <li class="feature-check disabled"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>API access</li>
                 </ul>
-                <a href="#payment" class="block text-center py-3 rounded-lg btn-cta font-semibold">Start 14-Day Free Trial</a>
+                <a href="onboard.html?plan=trader" class="block text-center py-3 rounded-lg btn-cta font-semibold">Start 14-Day Free Trial</a>
             </div>
 
             <!-- Professional -->
@@ -143,7 +147,7 @@
                     <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>White-label option</li>
                     <li class="feature-check"><svg class="text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Advanced risk management tools</li>
                 </ul>
-                <a href="#payment" class="block text-center py-3 rounded-lg border border-blue-500/30 text-blue-400 font-semibold hover:bg-blue-500/10 transition-colors">Start 14-Day Free Trial</a>
+                <a href="onboard.html?plan=professional" class="block text-center py-3 rounded-lg border border-blue-500/30 text-blue-400 font-semibold hover:bg-blue-500/10 transition-colors">Start 14-Day Free Trial</a>
             </div>
         </div>
     </div>
@@ -315,7 +319,7 @@
     <div class="max-w-xl mx-auto px-6 text-center fade-in">
         <h2 class="text-2xl font-bold text-white mb-4">Not sure which plan is right?</h2>
         <p class="text-gray-400 mb-6">Start with Paper Trading for free. No credit card required. Upgrade anytime.</p>
-        <a href="index.html" class="btn-cta">Start with Paper Trading &mdash; Free</a>
+        <a href="onboard.html?plan=paper" class="btn-cta">Start with Paper Trading &mdash; Free</a>
     </div>
 </section>
 
